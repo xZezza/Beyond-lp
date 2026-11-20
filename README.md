@@ -58,3 +58,14 @@ Per cambiare destinazione, impostare `PUBLIC_BEYOND_APP_URL` su Vercel prima del
 Le comparazioni di densità e raggio non sono presentate come due prove indipendenti; lo studio JADES non viene generalizzato a tutte le galassie.
 
 La landing e l’app hanno repository, installazioni e pubblicazioni indipendenti. Il codice non contiene token o dati del diario. Non sono stati acquistati servizi né attivata una pubblicazione dall’agente.
+
+
+## Cinematic descent prototype
+
+Branch `codex/cosmic-descent` replaces the initial hero with a scroll-driven journey: black hole → galaxy field → illustrated Milky Way → illustrated Solar System → Earth. The theory, evidence notes, library links and image credits remain below it.
+
+`src/components/CosmicJourney.astro` supplies semantic chapter content and native links. `src/scripts/cosmic-journey.ts` progressively enhances it; `cosmic-renderer.ts` draws a single Canvas 2D view. No new runtime dependency is added. The frame loop only runs while the scroll position settles or the canvas resizes; it does not run continuously at rest. Pointer/touch scrolling remains native.
+
+The five chapter links jump freely in either direction. “Skip the journey” leads directly to the theory. “Use still scenes” switches to ordinary sections; the system reduced-motion preference and missing canvas use the same alternative. Without JavaScript the chapter text and imagery remain readable.
+
+The black-hole-to-universe transition and route are imaginative, with compressed scales. Webb and Apollo 17 images have visible credits; the spiral galaxy and planetary arrangement are illustrations. This prototype is prepared locally and is not automatically published.

@@ -26,6 +26,39 @@
       "type": "scientific visualization / simulated black hole accretion disk",
       "notes": "WebP derived from the project’s existing original. Inspected: clean unlabeled 1024 x 1024 orange-red accretion disk on black, oblique flattened view. This is a visualization, not a photograph. Unmodified download.",
       "bytes": 46915
+    },
+    {
+      "file": "earth-blue-marble-nasa.webp",
+      "source_page": "https://images.nasa.gov/details/as17-148-22727",
+      "download_url": "https://images-assets.nasa.gov/image/as17-148-22727/as17-148-22727~orig.jpg",
+      "credit": "NASA / Apollo 17 crew",
+      "type": "photograph",
+      "notes": "Inspected: full Earth on black, no UI/text. 4579 x 4579. Preferred Earth asset.",
+      "bytes": 1915552
+    },
+    {
+      "file": "webb-deep-field.webp",
+      "source_page": "https://science.nasa.gov/asset/webb/webbs-first-deep-field-nircam-image/",
+      "download_url": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/webb/science/2022/07/STScI-01G8H1K2BCNATEZSKVRN9Z69SR.png?w=1600&h=1600&fit=clip",
+      "credit": "NASA, ESA, CSA, STScI",
+      "type": "near-infrared observational composite in assigned colors",
+      "notes": "Converted from NASA’s 1600px image to WebP for web delivery. Used as an observational field in an explicitly imagined cinematic montage; not an image of a universe inside a black hole."
+    },
+    {
+      "file": "milky-way-illustration.webp",
+      "source_page": "https://www.eso.org/public/images/eso1339g/",
+      "download_url": "https://cdn.eso.org/images/publicationjpg/eso1339g.jpg",
+      "credit": "NASA/JPL-Caltech/ESO/R. Hurt",
+      "type": "artist impression",
+      "license": "CC BY 4.0",
+      "notes": "1800px WebP of the published artwork. Camera framing and scale change in the imagined journey; not a photograph from outside the Milky Way."
+    }
+  ],
+  "illustrations": [
+    {
+      "name": "Solar System and camera journey",
+      "type": "procedural canvas illustration",
+      "notes": "Schematic planetary orbits, compressed positions and sizes, and an imagined camera path. Not a physical simulation or a measured route through the Webb field. Earth uses NASA photography; the Milky Way uses separately credited NASA/ESO artwork."
     }
   ]
 }

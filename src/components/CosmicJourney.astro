@@ -1,0 +1,40 @@
+---
+import '../styles/cosmic-journey.css';
+const chapters = [
+  {id:'horizon', label:'Black hole', eyebrow:'A speculative beginning', title:'What if our universe began inside a black hole?', lines:['What if our universe','began inside','a black hole?'], description:'Start at the edge of the unimaginable. Then follow a question all the way home.', image:'/assets/black-hole-nasa.webp', alt:'NASA scientific visualization of a black hole’s accretion disc', credit:'Black hole visualization · NASA / Jeremy Schnittman'},
+  {id:'galaxies', label:'Galaxies', eyebrow:'An imagined universe within', title:'An entire universe. On the other side.', lines:['An entire universe.','On the other side.'], description:'Galaxies come into view. Countless worlds, held inside one extraordinary possibility.', image:'/assets/webb-deep-field.webp', alt:'Webb’s deep-field image of the galaxy cluster SMACS 0723', credit:'Webb deep field · NASA, ESA, CSA, STScI'},
+  {id:'milky-way', label:'Milky Way', eyebrow:'Finding our place', title:'One galaxy. Countless worlds.', lines:['One galaxy.','Countless worlds.'], description:'We draw closer to the Milky Way. Somewhere in its spiral arms, a familiar star is waiting.', image:'/assets/milky-way-illustration.webp', alt:'Artist’s impression of the Milky Way’s spiral arms by NASA, JPL-Caltech, ESO and R. Hurt', credit:'Milky Way illustration · NASA/JPL-Caltech/ESO/R. Hurt'},
+  {id:'solar-system', label:'Solar System', eyebrow:'A familiar corner of the cosmos', title:'One star. Our Solar System.', lines:['One star.','Our Solar System.'], description:'Past the outer planets and inward toward the Sun. A small blue world begins to stand out.', image:'/assets/saturn-cassini-nasa.webp', alt:'Cassini’s enhanced-color photograph of Saturn and its rings', credit:'Illustrated Solar System · sizes and distances compressed'},
+  {id:'earth', label:'Earth', eyebrow:'The world we call home', title:'And then, there’s home.', lines:['And then,','there’s home.'], description:'From an extraordinary possibility to the only world we call home. Now, let’s look at the idea behind the journey.', image:'/assets/earth-blue-marble-nasa.webp', alt:'The Blue Marble photograph of Earth taken by the Apollo 17 crew', credit:'Earth photograph · NASA / Apollo 17'},
+];
+---
+<section class="cosmic-journey" id="journey" aria-label="From a black hole to Earth" data-mode="still">
+  <div class="journey-stage">
+    <canvas class="cosmic-canvas" aria-hidden="true"></canvas>
+    <div class="journey-vignette" aria-hidden="true"></div>
+    <div class="journey-chapters">
+      {chapters.map((chapter,index)=><article class:list={['journey-chapter',{'is-current':index===0}]} id={chapter.id} data-chapter={index} data-credit={chapter.credit} aria-labelledby={`${chapter.id}-title`}>
+        <img class="journey-still" src={chapter.image} alt={chapter.alt} width="1600" height="1000" loading={index===0?'eager':'lazy'} fetchpriority={index===0?'high':'auto'} />
+        <div class="journey-copy">
+          <p class="landing-eyebrow">{chapter.eyebrow}</p>
+          {index===0?<h1 id={`${chapter.id}-title`}>{chapter.lines.map((line,i)=><span class:list={{'journey-accent':i===2}}>{line}</span>)}</h1>:<h2 id={`${chapter.id}-title`}>{chapter.lines.map(line=><span>{line}</span>)}</h2>}
+          <p class="journey-description">{chapter.description}</p>
+          {index===0&&<div class="journey-actions"><a class="landing-button primary-button" href="#galaxies" data-journey-jump="1">Begin the descent</a><a class="journey-text-link" href="#hypothesis">Skip to the idea</a></div>}
+          {index===4&&<div class="journey-actions"><a class="landing-button primary-button" href="#hypothesis">Explore the hypothesis</a><button class="journey-text-link" data-journey-replay hidden>Replay the descent</button></div>}
+        </div>
+      </article>)}
+    </div>
+    <div class="journey-hud">
+      <div class="journey-hud-top"><p class="journey-route">The horizon to home</p><p class="journey-scroll-hint">Scroll to travel</p><a href="#hypothesis" class="journey-skip">Skip the journey</a></div>
+      <nav class="journey-navigation" aria-label="Journey chapters">{chapters.map((chapter,index)=><a href={`#${chapter.id}`} data-journey-jump={index} aria-current={index===0?'step':undefined}><span>{chapter.label}</span></a>)}</nav>
+      <div class="journey-progress" aria-hidden="true"><span></span></div>
+      <div class="journey-hud-bottom"><a class="journey-attribution" href="#credits">{chapters[0].credit}</a><p>Imagined journey · not to scale</p><button class="journey-motion-toggle" aria-pressed="false" hidden>Use still scenes</button></div>
+      <p class="journey-sr-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    </div>
+  </div>
+</section>
+<script>
+  import { initCosmicJourney } from '../scripts/cosmic-journey';
+  const journey = document.querySelector<HTMLElement>('.cosmic-journey');
+  if (journey) initCosmicJourney(journey);
+</script>
