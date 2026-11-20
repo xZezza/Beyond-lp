@@ -1,0 +1,22 @@
+---
+import '../styles/landing.css';
+interface Props { title?: string; description?: string }
+const { title = 'Beyond — What if our universe began inside a black hole?', description = 'Explore the strangest ideas about space, the evidence behind them, and the questions that remain. A cinematic journey through speculative cosmology.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#05060B" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Beyond" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/webp" href="/assets/black-hole-nasa.webp" />
+    <link rel="preload" href="/fonts/SpaceGrotesk-Bold.ttf" as="font" type="font/ttf" crossorigin />
+  </head>
+  <body><slot /></body>
+</html>

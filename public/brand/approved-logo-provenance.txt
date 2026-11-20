@@ -1,0 +1,1 @@
+Approved Beyond identity supplied in output/logo/Beyond-logo-corretto. The original lettering paths and embedded black-hole PNG are preserved. Only SVG canvas whitespace is cropped for web placement. Space Grotesk is distributed under the OFL license in public/fonts. Hero imagery remains the existing NASA scientific visualization; no new image was generated.

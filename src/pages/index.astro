@@ -1,0 +1,88 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+import { getAppLinks } from '../data/app-links.mjs';
+const app = getAppLinks(import.meta.env.PUBLIC_BEYOND_APP_URL);
+---
+<LandingLayout>
+  <a class="landing-skip" href="#main">Skip to content</a>
+  <header class="landing-header">
+    <a class="landing-logo" href="/" aria-label="Beyond home"><img src="/brand/beyond-approved.svg" alt="Beyond" width="1850" height="390" /></a>
+    <nav class="landing-nav" aria-label="Main navigation"><a href="#hypothesis">The hypothesis</a><a href="#questions">The evidence</a><a href={app.library}>The library</a></nav>
+    <a class="header-enter" href={app.home}>Enter Beyond</a>
+    <details class="landing-mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation"><a href="#hypothesis">The hypothesis</a><a href="#questions">The evidence</a><a href={app.library}>The library</a><a href={app.home}>Enter Beyond</a></nav></details>
+  </header>
+  <main id="main">
+    <section class="landing-hero" aria-labelledby="hero-title">
+      <div class="hero-art" aria-hidden="true"><img src="/assets/black-hole-nasa.webp" alt="" width="1024" height="1024" fetchpriority="high" /></div>
+      <div class="landing-wrap hero-content">
+        <p class="landing-eyebrow"><span class="hypothesis-label">Speculative cosmology</span> A Beyond expedition</p>
+        <h1 id="hero-title">What if our universe<br class="wide-break" /> began inside<br /> a <em>black hole?</em></h1>
+        <p class="hero-description">Explore the strangest ideas about space.<br />Follow the science. Keep the questions open.</p>
+        <div class="landing-actions"><a class="landing-button primary-button" href="#hypothesis">Explore the hypothesis</a><a class="landing-button secondary-button" href="#universe">Browse the universe</a></div>
+        <p class="hero-note">A possibility to investigate. An origin still unknown.</p>
+      </div>
+      <div class="hero-foot landing-wrap"><a href="#hypothesis">Scroll into the idea</a><span>Black hole visualization · NASA / Jeremy Schnittman</span><button type="button" class="motion-control" aria-pressed="false" hidden>Pause motion</button></div>
+    </section>
+
+    <section class="hypothesis-section landing-wrap" id="hypothesis" aria-labelledby="hypothesis-title">
+      <div class="section-kicker" data-reveal><p class="landing-eyebrow">The black-hole universe</p><span class="content-status">Theoretical model · Unconfirmed</span></div>
+      <div class="hypothesis-grid">
+        <h2 id="hypothesis-title" data-reveal>An ending on one side.<br /><span>A beginning on the other.</span></h2>
+        <div class="hypothesis-copy" data-reveal><p>To an outside observer, matter disappears behind a black hole’s horizon. Some theoretical models ask whether the collapse could lead to an expanding universe on the other side.</p><p>In models with spacetime torsion, a bounce can replace the singularity. That opens an extraordinary possibility: our cosmic beginning could be connected to a black hole in another universe.</p><p class="plain-caveat">The model is speculative. It has not been established as the origin of our universe.</p><a class="research-link" href="https://arxiv.org/abs/2509.11468" target="_blank" rel="noreferrer">Read the theoretical research <span>Popławski, 2025</span></a></div>
+      </div>
+      <div class="story-divider" aria-hidden="true"></div>
+      <p class="hypothesis-invitation" data-reveal>The interesting part is where the idea meets the evidence.</p>
+    </section>
+
+    <section class="questions-section" id="questions" aria-labelledby="questions-title"><div class="landing-wrap">
+      <div class="questions-heading" data-reveal><p class="landing-eyebrow">Look closer</p><h2 id="questions-title">Three questions.<br /><span>No shortcuts to certainty.</span></h2><p>Density, distance, and galactic spin make compelling headlines. Here is what those comparisons can — and cannot — tell us.</p></div>
+      <div class="evidence-notes">
+        <details class="evidence-note" open><summary><span class="evidence-category">Density</span><span class="evidence-title">A curious relationship in the equations.</span><span class="note-toggle" aria-hidden="true"></span></summary><div class="evidence-body"><div><p>In a simplified flat-universe comparison, put the mass–energy inside one Hubble radius into the Schwarzschild-radius formula, using the critical density. The two radii are equal by construction.</p><p>That makes the density and radius comparisons mathematically connected. They are not two independent confirmations that we live inside a black hole.</p></div><div class="equation-note"><p>Under these assumptions</p><code>R<sub>H</sub> = c / H</code><code>ρ<sub>c</sub> = 3H² / (8πG)</code><code>R<sub>s</sub> = 2GM / c² = R<sub>H</sub></code><span>A useful comparison, not a complete cosmological model.</span></div></div></details>
+        <details class="evidence-note"><summary><span class="evidence-category">Distance</span><span class="evidence-title">Which “radius of the universe” do we mean?</span><span class="note-toggle" aria-hidden="true"></span></summary><div class="evidence-body"><div><p>The observable universe, the Hubble sphere, and the entire universe are different concepts. Their sizes cannot simply be substituted for one another.</p><p>We have not measured an outer edge or the full radius of the entire universe. A numerical resemblance depends on exactly which region and mass–energy we compare.</p><a class="research-link" href="https://www.astro.ucla.edu/~wright/cosmology_faq.html" target="_blank" rel="noreferrer">Explore the cosmological definitions <span>Ned Wright / UCLA</span></a></div><p class="evidence-takeaway">A match in a calculation is the beginning of a question, not the end of an investigation.</p></div></details>
+        <details class="evidence-note"><summary><span class="evidence-category">Rotation</span><span class="evidence-title">Do galaxies point to a larger cosmic spin?</span><span class="note-toggle" aria-hidden="true"></span></summary><div class="evidence-body"><div><p>A JADES study reported unequal numbers of spiral galaxies with opposite apparent winding directions in a particular deep field. This does not show that all galaxies rotate clockwise, or that the whole universe is spinning.</p><p>The wider statistical interpretation is contested: other analyses have found no significant evidence for large-scale spin anisotropy. Even a confirmed asymmetry would not uniquely establish a parent black hole.</p><div class="research-pair"><a class="research-link" href="https://arxiv.org/abs/2502.18781" target="_blank" rel="noreferrer">The JADES analysis <span>Shamir, 2025</span></a><a class="research-link" href="https://arxiv.org/abs/2404.06617" target="_blank" rel="noreferrer">A different statistical result <span>Patel &amp; Desmond</span></a></div></div><p class="evidence-takeaway">An observation. Several possible explanations. A question still open.</p></div></details>
+      </div>
+      <div class="evidence-footer" data-reveal><span>Our approach</span><p>Wonder starts the journey.<br />Evidence decides how far an idea can go.</p></div>
+    </div></section>
+
+    <section class="universe-section landing-wrap" id="universe" aria-labelledby="universe-title">
+      <div class="universe-heading" data-reveal><div><p class="landing-eyebrow">Keep exploring</p><h2 id="universe-title">There is more<br /><span>on the other side.</span></h2></div><p>Real discoveries, unresolved questions, and books that take an idea further. Choose your own route.</p></div>
+      <div class="landing-destinations">
+        <a class="landing-destination" href={app.oumuamua} data-reveal><div class="destination-art"><img src="/assets/oumuamua-eso.webp" alt="Artist’s impression of the interstellar object ‘Oumuamua" loading="lazy" width="1280" height="720" /></div><span class="landing-eyebrow">An interstellar visitor</span><h3>Something passed through.</h3><p>What we know about ‘Oumuamua, and what remains beyond our reach.</p><span class="destination-action">Explore ‘Oumuamua</span></a>
+        <a class="landing-destination" href={app.blackHole} data-reveal><div class="destination-art"><img src="/assets/black-hole-nasa.webp" alt="Scientific visualization of a black hole and its luminous accretion disc" loading="lazy" width="1024" height="1024" /></div><span class="landing-eyebrow">At the edge of light</span><h3>The boundary of escape.</h3><p>Meet the real physics behind the most extraordinary object in the story.</p><span class="destination-action">Explore black holes</span></a>
+        <a class="landing-destination" href={app.library} data-reveal><div class="destination-art library-art"><img src="/assets/saturn-cassini-nasa.webp" alt="Saturn and its rings photographed by the Cassini spacecraft in enhanced colors" loading="lazy" width="1280" height="720" /><span class="library-art-caption">Cosmos · Time · First contact</span></div><span class="landing-eyebrow">The reading room</span><h3>One question. Another page.</h3><p>Follow a discovery into books by Sagan, Hawking, and Clarke.</p><span class="destination-action">Open the library</span></a>
+      </div>
+    </section>
+
+    <section class="enter-section"><div class="landing-wrap enter-content" data-reveal><p class="landing-eyebrow">Your next point of departure</p><h2>Leave the familiar<br /><span>behind.</span></h2><p>Step aboard. Earth is only the first stop.</p><a class="landing-button primary-button" href={app.home}>Enter Beyond</a><a class="skip-story" href={app.map}>Or choose a destination directly</a></div></section>
+    <section class="image-credits landing-wrap" id="credits" aria-labelledby="credits-title">
+      <h2 id="credits-title">Images behind the journey.</h2>
+      <div class="image-credits-grid">
+        <p><a href="https://svs.gsfc.nasa.gov/13326" target="_blank" rel="noreferrer">Black hole visualization</a><span>NASA’s Goddard Space Flight Center / Jeremy Schnittman. A scientific visualization, not a photograph.</span></p>
+        <p><a href="https://www.eso.org/public/images/eso1737a/" target="_blank" rel="noreferrer">‘Oumuamua</a><span>ESO / M. Kornmesser. Artist’s impression; the object’s true shape is unknown. CC BY 4.0.</span></p>
+        <p><a href="https://science.nasa.gov/resource/a-splendor-seldom-seen-2/" target="_blank" rel="noreferrer">Saturn and its rings</a><span>NASA / JPL-Caltech / Space Science Institute. Cassini mosaic in enhanced colors.</span></p>
+      </div>
+    </section>
+  </main>
+  <footer class="landing-footer landing-wrap"><a class="landing-logo" href="/" aria-label="Beyond home"><img src="/brand/beyond-approved.svg" alt="Beyond" width="1850" height="390" loading="lazy" /></a><p>A field guide to the unknown.</p><nav aria-label="Footer navigation"><a href="#questions">Evidence &amp; sources</a><a href="#credits">Image credits</a><a href={app.diary}>Your logbook</a></nav></footer>
+  <script>
+    const root = document.documentElement;
+    const reduceQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const toggle = document.querySelector<HTMLButtonElement>('.motion-control');
+    if (toggle) toggle.hidden = false;
+    let manuallyPaused = false;
+    function syncMotion() {
+      const paused = manuallyPaused || reduceQuery.matches;
+      root.classList.toggle('motion-paused', paused);
+      toggle?.setAttribute('aria-pressed', String(paused));
+      if (toggle) { toggle.textContent = paused ? 'Motion paused' : 'Pause motion'; toggle.disabled = reduceQuery.matches; }
+    }
+    toggle?.addEventListener('click', () => { manuallyPaused = !manuallyPaused; syncMotion(); });
+    reduceQuery.addEventListener('change', syncMotion);
+    syncMotion();
+    if (!reduceQuery.matches && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target); } }), { threshold: .08 });
+      document.querySelectorAll('[data-reveal]').forEach(el => { el.classList.add('reveal-ready'); observer.observe(el); });
+    }
+    document.querySelectorAll('.landing-mobile-menu a').forEach(link => link.addEventListener('click', () => document.querySelector('.landing-mobile-menu')?.removeAttribute('open')));
+  </script>
+</LandingLayout>

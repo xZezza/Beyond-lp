@@ -1,0 +1,31 @@
+{
+  "assets": [
+    {
+      "file": "oumuamua-eso.webp",
+      "source_page": "https://www.eso.org/public/images/eso1737a/",
+      "download_url": "https://cdn.eso.org/images/screen/eso1737a.jpg",
+      "credit": "ESO / M. Kornmesser",
+      "type": "artist impression",
+      "notes": "WebP derived from the project’s existing original. Inspected: 1280 x 800 elongated irregular dark rock on starfield, not observed shape. Label as artistic reconstruction; true shape unknown.",
+      "bytes": 212532
+    },
+    {
+      "file": "saturn-cassini-nasa.webp",
+      "source_page": "https://science.nasa.gov/resource/a-splendor-seldom-seen-2/",
+      "download_url": "https://images-assets.nasa.gov/image/PIA14934/PIA14934~orig.jpg",
+      "credit": "NASA / JPL-Caltech / Space Science Institute",
+      "type": "enhanced-color photograph mosaic",
+      "notes": "WebP derived from the project’s existing original. Inspected: 6672 x 3104, Saturn shadow and backlit rings, deep black. Spectral filters combined; not natural color.",
+      "bytes": 734942
+    },
+    {
+      "file": "black-hole-nasa.webp",
+      "source_page": "https://svs.gsfc.nasa.gov/13326",
+      "download_url": "https://svs.gsfc.nasa.gov/vis/a010000/a013300/a013326/BH_AccretionDisk_360_4k.00250_print.jpg",
+      "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
+      "type": "scientific visualization / simulated black hole accretion disk",
+      "notes": "WebP derived from the project’s existing original. Inspected: clean unlabeled 1024 x 1024 orange-red accretion disk on black, oblique flattened view. This is a visualization, not a photograph. Unmodified download.",
+      "bytes": 46915
+    }
+  ]
+}
