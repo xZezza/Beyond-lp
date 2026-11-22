@@ -32,3 +32,6 @@
 - All eight Solar System planets must rotate. Animate axial spin and orbital travel with gentle compressed cinematic periods. The camera and Earth renderer must use the same time-dependent orbital position so the nested zoom never jumps away from the moving planet. Use illustrative procedural surfaces for the small non-Earth planets and preserve NASA attribution for Earth.
 
 - The opening black hole must visibly animate, not just play a nearly static video. Use the earlier NASA camera excursion (9.5–12 seconds and back) while retaining its orientation; keep poster and movie crop/aspect ratio identical.
+
+- Latest playback correction supersedes continuous looping: autoplay makes one forward trip to Earth and one return to the horizon, then hands over to manual exploration. Only explicit replay restarts it. Keep the black-hole video animated at rest.
+- The user rejected the attempted aperture and inner-ring masks because they cut and distort the disc. Restore the previously accepted black-hole rendering; do not retain those visual masks. The requested entry smoothing and ring removal remain unresolved design work.

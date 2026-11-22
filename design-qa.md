@@ -57,3 +57,12 @@ All eight planets now orbit and spin with individual illustrative periods. Venus
 The previous 28–36 second NASA segment had a nearly fixed viewpoint, so it looked static despite playing. Replaced it with the visible camera excursion at 9.5–12 seconds and its reverse. Matching 3200×2334 poster and movie crops preserve the aspect ratio and keep the viewpoint on the same side of the disc. This is an illustrative edited loop; accretion is not physically reversed. Added muted inline autoplay and reset video time when the journey starts/replays. Static mode remains paused. Astro check, all 19 tests, and the production build/resource audit pass.
 
 Updated the previously shared standalone HTML aliases as well as the latest review file. The user explicitly requested the local preview opened from the beginning, so its server is retained for viewing. No deployment.
+
+
+## One-shot preview and visual rollback — 22 November 2026
+
+Autoplay now makes exactly one trip to Earth and back, rests at the horizon and switches to manual exploration. Explicit Replay still works. The black-hole video keeps animating at rest. The two playback tests now assert completion and no automatic restart.
+
+The user rejected the attempted horizon aperture and ring removal: their masks introduced visible cuts in the accretion disc. Restored the previously accepted renderer in full and removed those experimental helpers/tests. This rollback does not claim to solve the requested entry smoothing or inner-ring removal; those remain design work.
+
+Validation after rollback: Astro check has no errors, warnings or hints; all 19 tests and the static build/resource audit pass. The renderer is identical to the last accepted commit, so none of the experimental cuts remain. Small browser anchor realignments near the top no longer interrupt autoplay; native input still takes control.

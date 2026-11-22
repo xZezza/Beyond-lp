@@ -62,7 +62,7 @@ La landing e l’app hanno repository, installazioni e pubblicazioni indipendent
 
 ## Cinematic descent prototype
 
-Branch `codex/cosmic-descent` opens on a nearly black horizon and automatically previews a continuous out-and-back journey. The black-hole question stays on the left during playback. Native scroll, the timeline or “Take control” hands the current position to manual exploration. Chapters remain freely selectable. The preview loops without chapter holds or an automatic final stop.
+Branch `codex/cosmic-descent` opens on a nearly black horizon and automatically previews a continuous out-and-back journey. The black-hole question stays on the left during playback. Native scroll, the timeline or “Take control” hands the current position to manual exploration. Chapters remain freely selectable. The preview runs once without chapter holds, returns to the horizon, then switches to manual exploration. Only an explicit replay restarts it.
 
 A single logarithmic camera magnifies nested coordinates: galaxy field inside the horizon, a volumetric spiral in that field, the Solar System within its arm, and Earth in its orbit. The spiral uses stars and diffuse dust distributed in three dimensions with perspective; the NASA/ESO artwork is retained only for still scenes. Earth uses a NASA global surface mosaic projected onto an inclined rotating sphere, and continues rotating when manual exploration rests there. The black hole uses an 3200px video derived from NASA's 4K simulation with a high-resolution poster fallback. The original 1024px image is no longer enlarged for the hero.
 

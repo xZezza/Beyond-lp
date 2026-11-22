@@ -25,17 +25,17 @@ test('the star field is stable across page loads and every generated value stays
   for (let i=0;i<100;i++) {const value=a();assert.equal(value,b());assert.ok(value>=0&&value<1);}
 });
 
-test('the film preview moves out and back continuously and keeps looping until user input',async()=>{
+test('the preview makes exactly one complete out-and-back journey then rests at the horizon',async()=>{
   const {introAt,INTRO_TIMING:t,INTRO_DURATION:d}=await import('../src/data/journey-math.mjs');
   assert.equal(introAt(0).progress,0);
   assert.ok(Math.abs(introAt(t.forward/2).progress-.5)<1e-12);
   assert.equal(introAt(t.forward).progress,1);
   assert.ok(Math.abs(introAt(t.forward+t.back/2).progress-.5)<1e-12);
   assert.equal(introAt(d).progress,0);
-  assert.equal(introAt(d+d/4).done,false);
-  assert.ok(introAt(d+d/4).progress>0);
+  assert.equal(introAt(d).done,true);
+  for(const time of [d+1,d+d/4,d*10]) {assert.equal(introAt(time).done,true);assert.equal(introAt(time).progress,0);}
 });
-test('the loop has no lead-in, hold phase or discontinuous cycle boundary',async()=>{
+test('the preview has no chapter holds and settles smoothly into manual control',async()=>{
   const {introAt,INTRO_TIMING:t,INTRO_DURATION:d}=await import('../src/data/journey-math.mjs');
   assert.ok(introAt(100).progress>0);
   assert.ok(introAt(t.forward+100).progress<1);

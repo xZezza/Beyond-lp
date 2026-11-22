@@ -85,7 +85,8 @@ export function initCosmicJourney(root: HTMLElement) {
     if(intro) {
       introElapsed+=dt;
       const step=introAt(introElapsed);current=target=step.progress;
-      // No dwell or final stop: this preview loops until the visitor takes over.
+      // Complete exactly one return trip, then leave the camera at the horizon.
+      if(step.done)endIntro(true);
     } else {
       target=scrollProgress(root.getBoundingClientRect().top,travel());
       current+=(target-current)*(1-Math.exp(-dt/(chapterGlide?210:95)));
@@ -101,7 +102,7 @@ export function initCosmicJourney(root: HTMLElement) {
     if(intro){const progress=current;endIntro();window.scrollTo({top:position()+travel()*progress,behavior:'instant'});current=target=progress;}
   }
   function onScroll(){
-    if(intro&&introScrollTarget!==null&&Math.abs(window.scrollY-introScrollTarget)<2){introScrollTarget=null;requestDraw();return;}
+    if(intro&&Math.abs(window.scrollY-(introScrollTarget??position()))<24){requestDraw();return;}
     if(intro){interacted=true;endIntro();}requestDraw();
   }
   function jump(index:number,instant=false,markInteraction=true) {
