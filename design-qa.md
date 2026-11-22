@@ -50,3 +50,10 @@ Not pushed or deployed. The separate Beyond cockpit app is unchanged.
 All eight planets now orbit and spin with individual illustrative periods. Venus and Uranus use opposite axial rotation; the other small planets have rotating procedural surfaces, with visible cloud bands and Jupiter's illustrative red spot. Earth retains NASA map data. The same time-dependent Earth position drives its orbit and the nested zoom camera.
 
 19 tests pass, including every planet's movement, closed elliptical trajectories, continuity across orbit wrap and the camera following Earth at several orbital phases. Astro check and build/resource audit pass. At 1280×800, two captures at unchanged scroll show all planets changing position; the jump to Earth reaches the moving planet and keeps it centred. No new console errors after a fresh load. Temporary viewport override was reset. Screenshots are in `output/landing/smooth/solar-orbits-a.jpg` and `solar-orbits-b.jpg`. Static/reduced-motion mode remains still. No deployment.
+
+
+## Opening black-hole motion follow-up — 22 November 2026
+
+The previous 28–36 second NASA segment had a nearly fixed viewpoint, so it looked static despite playing. Replaced it with the visible camera excursion at 9.5–12 seconds and its reverse. Matching 3200×2334 poster and movie crops preserve the aspect ratio and keep the viewpoint on the same side of the disc. This is an illustrative edited loop; accretion is not physically reversed. Added muted inline autoplay and reset video time when the journey starts/replays. Static mode remains paused. Astro check, all 19 tests, and the production build/resource audit pass.
+
+Updated the previously shared standalone HTML aliases as well as the latest review file. The user explicitly requested the local preview opened from the beginning, so its server is retained for viewing. No deployment.

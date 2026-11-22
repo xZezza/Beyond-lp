@@ -59,14 +59,14 @@
       "download_url": "https://svs.gsfc.nasa.gov/vis/a010000/a013300/a013326/Black_Hole_Accretion_Disk_Sim_4k.mp4",
       "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
       "type": "animated scientific visualization",
-      "notes": "Derived from the 3840×3840 NASA movie, seconds 28–36. Cropped to the accretion-disc area and encoded at 3200×1666, 30 fps, without audio. A short video loop rather than an enlarged 1024px still."
+      "notes": "Derived from the 3840×3840 NASA movie, seconds 9.5–12, followed by the reverse camera excursion for a continuous loop. Cropped to 3840×2800 and encoded at 3200×2334, 30 fps, without audio. This earlier camera movement is visibly animated, remaining on the same side of the disc. The reversed segment is an illustrative playback edit, not a physical reversal of accretion."
     },
     {
-      "file": "black-hole-detail.webp",
+      "file": "black-hole-detail.jpg",
       "source_page": "https://svs.gsfc.nasa.gov/13326/",
       "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
       "type": "frame from animated scientific visualization",
-      "notes": "3200px poster extracted from the same 4K movie and crop; used as a high-resolution still fallback."
+      "notes": "3200×2334 JPEG extracted from second 9.5 of the same 4K movie and matching crop; used as the high-resolution still fallback."
     },
     {
       "file": "earth-surface-nasa.jpg",

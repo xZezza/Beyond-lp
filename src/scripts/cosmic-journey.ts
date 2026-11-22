@@ -23,7 +23,7 @@ export function initCosmicJourney(root: HTMLElement) {
   let renderer: CosmicRenderer|undefined;
   const motion=root.querySelector<HTMLVideoElement>('.journey-motion-source');
   const assets={
-    hole:load('/assets/black-hole-detail.webp','hole'),
+    hole:load('/assets/black-hole-detail.jpg','hole'),
     field:load('/assets/webb-deep-field.webp','field'),
     galaxy:load('/assets/milky-way-illustration.webp','galaxy'),
     earth:load('/assets/earth-surface-nasa.jpg'),
@@ -72,6 +72,7 @@ export function initCosmicJourney(root: HTMLElement) {
   function startIntro() {
     if(!enhanced||reducedQuery.matches)return;
     intro=true;introElapsed=0;current=target=0;lastTime=0;chapterGlide=false;
+    if(motion&&motion.readyState>=1){motion.currentTime=0;void motion.play().catch(()=>undefined);}
     introScrollTarget=position();
     history.replaceState(null,'','#horizon');
     window.scrollTo({top:introScrollTarget,behavior:'instant'});
