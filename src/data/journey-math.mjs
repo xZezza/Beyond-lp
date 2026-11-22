@@ -21,3 +21,13 @@ export function seededRandom(seed = 7) {
   let state = seed >>> 0;
   return () => { state = (Math.imul(1664525, state) + 1013904223) >>> 0; return state / 4294967296; };
 }
+
+// Continuous out-and-back film preview; only user input hands over control.
+export const INTRO_TIMING = Object.freeze({forward:12000,back:8000});
+export const INTRO_DURATION = INTRO_TIMING.forward+INTRO_TIMING.back;
+export function introAt(elapsed) {
+  const t=Math.max(0,elapsed)%INTRO_DURATION;
+  const ease=value=>(1-Math.cos(Math.PI*clamp(value)))/2;
+  if(t<INTRO_TIMING.forward) return {progress:ease(t/INTRO_TIMING.forward),phase:'forward',done:false};
+  return {progress:1-ease((t-INTRO_TIMING.forward)/INTRO_TIMING.back),phase:'back',done:false};
+}

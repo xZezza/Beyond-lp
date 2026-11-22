@@ -28,3 +28,18 @@ Browser verified at 1280×720 and 390×844. The opening view, galaxy field, Milk
 Review assets in the companion workspace: output/landing/descent/01-black-hole.jpg through 05-earth.jpg. A self-contained HTML review copy with inlined scripts, CSS, imagery and fonts is at output/landing/cosmic-descent-preview.html. Browser policy disallowed opening file:// URLs, so that offline copy was packaged and checked for embedded resources but not opened by the automation; browser QA used the local web preview.
 
 This version is local on its development branch. It has not been pushed or deployed. The original Beyond application was not changed.
+
+
+## Continuous nested journey revision — 22 November 2026
+
+User feedback: replace separate image slides with an image-within-image zoom, remove photo mattes, keep a continuous preview, improve black-hole resolution, rotate Earth, simplify the opening copy, give the galaxy volume, and start with an almost opaque dark horizon.
+
+Implemented one hierarchical camera and continuous 20-second out-and-back loop. No lead-in, chapter holds or final automatic stop. Real muted NASA video supplies the black hole, with a 3200px poster fallback. Its child field is nearly invisible initially and reveals while approaching. The interactive galaxy is a perspective-projected 3D distribution of 12,000 star/dust particles, including diffuse outskirts and reduced distant contrast; the still fallback retains the credited artwork. Earth is a rotating orthographic sphere from NASA's June 2004 global surface mosaic, without an opaque photo square.
+
+Opening descriptive subtitle, Begin the descent, Skip to the idea (including the header button), and the route label were removed. The fixed headline, chapter links, native scrubber, takeover and static alternative remain.
+
+Browser QA used the existing localhost preview at 1280×800 and 390×844. Checked nested field/galaxy views, the volumetric spiral, the dark opening with cleaned copy, and the Earth globe. Two screenshots taken with unchanged scroll show different continents, confirming animation at rest. Autoplay remained active across repeated cycles and retained the horizon caption; Take control/chapter navigation switched to manual. The still-scene toggle exposed all chapters, and enabling zoom restored the canvas. Mobile has no horizontal overflow. Viewport override was reset. An intermediate missing-import error was fixed before the final checks; no new console errors after a fresh final page load. OS motion preference was not changed.
+
+Validation: 17 passing tests, including camera continuity, monotonic magnification, nested destination centres and Earth's orbital alignment. Astro check and static build/resource audit pass. Existing non-blocking dependency annotation warnings remain. Updated review screenshots: `output/landing/smooth/black-hole-dark.jpg`, `galaxy-volume.jpg`, `earth-rotation-a.jpg`, `earth-rotation-b.jpg`, and `mobile-earth.jpg` in the companion workspace. A new self-contained HTML review artifact includes local fonts, textures and the video. File-protocol browser automation remains unavailable; visual QA used localhost.
+
+Not pushed or deployed. The separate Beyond cockpit app is unchanged.

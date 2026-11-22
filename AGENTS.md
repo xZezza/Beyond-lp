@@ -12,5 +12,19 @@
 
 - Focus on this landing, not on publishing/updating the separate cockpit app. The user wants a giant black hole close-up, then a zoom through galaxies, the Milky Way, the Solar System and Earth.
 - Use a scroll-driven cinematic intro with reversible movement and direct chapter jumps. Preserve a way to skip to the theory. Treat the inside-black-hole transition as an imagined route, not established cosmology.
-- Keep native still scenes as the no-JS / reduced-motion / unavailable-canvas fallback. No mandatory timed playback, scrolling hijack, new framework dependency or generated bitmap imagery.
+- Keep native still scenes as the no-JS / reduced-motion / unavailable-canvas fallback. No scrolling hijack, new framework dependency or generated bitmap imagery. Automatic playback must stay skippable.
 - Prototype on codex/cosmic-descent locally for review. The existing Vercel deployment remains the reference published version until a release is requested.
+
+- Latest visual feedback: avoid visible photographic rectangles and black mattes. Earth must be a circular cutout, galaxies must blend through soft alpha edges into a shared star field, and chapter jumps should glide without disrupting native user scrolling.
+
+- Historical opening request, superseded by the continuous loop below: black hole → galaxies → Milky Way → Solar System → Earth, then back to the black hole. Keep the opening black-hole headline on the left throughout this preview; after the return, hand control to manual scroll and chapters. Provide Skip intro, let native user input interrupt, and skip autoplay for reduced motion or a direct later-chapter URL.
+
+- Latest correction: the intro must feel like a continuous video, without pauses on chapters or a final automatic stop. Loop the outward-and-returning journey until native user input or Take control switches to manual exploration. Keep the black-hole headline fixed during the loop. Use the credited NASA 4K-derived animated black hole and 3200px poster, with restrained zoom; do not enlarge the old 1024px still into a grainy hero.
+
+- Latest refinement: nested-image zoom, not separate slides or whole-screen crossfades. Keep destinations at coherent positions within their parent scene, moving one camera through all scales. Earth must rotate about its axis using a credited global map projected on a sphere, including when manual exploration rests on Earth. Reduced-motion / still mode remains static.
+
+- Opening copy cleanup: retain the black-hole question but remove its descriptive subtitle and Begin the descent / Skip to the idea actions, including the header Skip to the idea button and The horizon to home / Automatic preview route label. Keep the actual exploration controls available.
+
+- Latest art direction: the interactive galaxy must have volume and perspective, not a single flat photograph. Use a procedural spiral of stars/dust in depth; keep the NASA/ESO artwork only as the still-scene fallback. At the opening, the black-hole interior should be almost opaque black, with the nested universe becoming visible only while approaching.
+
+- Blend the distant galaxy into the wider universe: lower distant contrast, diffuse arm edges and a scattered 3D outer population shared with the surrounding field, rather than a bright isolated spiral badge.

@@ -52,6 +52,29 @@
       "type": "artist impression",
       "license": "CC BY 4.0",
       "notes": "1800px WebP of the published artwork. Camera framing and scale change in the imagined journey; not a photograph from outside the Milky Way."
+    },
+    {
+      "file": "black-hole-motion.mp4",
+      "source_page": "https://svs.gsfc.nasa.gov/13326/",
+      "download_url": "https://svs.gsfc.nasa.gov/vis/a010000/a013300/a013326/Black_Hole_Accretion_Disk_Sim_4k.mp4",
+      "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
+      "type": "animated scientific visualization",
+      "notes": "Derived from the 3840×3840 NASA movie, seconds 28–36. Cropped to the accretion-disc area and encoded at 3200×1666, 30 fps, without audio. A short video loop rather than an enlarged 1024px still."
+    },
+    {
+      "file": "black-hole-detail.webp",
+      "source_page": "https://svs.gsfc.nasa.gov/13326/",
+      "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
+      "type": "frame from animated scientific visualization",
+      "notes": "3200px poster extracted from the same 4K movie and crop; used as a high-resolution still fallback."
+    },
+    {
+      "file": "earth-surface-nasa.jpg",
+      "source_page": "https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/",
+      "download_url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/june/world.200406.3x5400x2700.jpg",
+      "credit": "NASA Earth Observatory / Reto Stöckli",
+      "type": "satellite-derived global surface mosaic, June 2004",
+      "notes": "4096×2048 JPEG derived from the 5400×2700 global map. Mapped to a rotating orthographic globe with illustrative lighting, atmosphere and compressed size; not an Apollo photograph or real-time weather."
     }
   ],
   "illustrations": [
@@ -59,6 +82,11 @@
       "name": "Solar System and camera journey",
       "type": "procedural canvas illustration",
       "notes": "Schematic planetary orbits, compressed positions and sizes, and an imagined camera path. Not a physical simulation or a measured route through the Webb field. Earth uses NASA photography; the Milky Way uses separately credited NASA/ESO artwork."
+    },
+    {
+      "name": "Volumetric spiral galaxy",
+      "type": "procedural 3D particle illustration projected to Canvas 2D",
+      "notes": "Four spiral arms, warm central bulge, stars and diffuse dust distributed in three dimensions with perspective and near clipping. Illustrative geometry, not a measured Milky Way model. The credited NASA/ESO image remains only in static scenes."
     }
   ]
 }

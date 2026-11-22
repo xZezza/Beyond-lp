@@ -24,3 +24,21 @@ test('the star field is stable across page loads and every generated value stays
   const a=seededRandom(8),b=seededRandom(8);
   for (let i=0;i<100;i++) {const value=a();assert.equal(value,b());assert.ok(value>=0&&value<1);}
 });
+
+test('the film preview moves out and back continuously and keeps looping until user input',async()=>{
+  const {introAt,INTRO_TIMING:t,INTRO_DURATION:d}=await import('../src/data/journey-math.mjs');
+  assert.equal(introAt(0).progress,0);
+  assert.ok(Math.abs(introAt(t.forward/2).progress-.5)<1e-12);
+  assert.equal(introAt(t.forward).progress,1);
+  assert.ok(Math.abs(introAt(t.forward+t.back/2).progress-.5)<1e-12);
+  assert.equal(introAt(d).progress,0);
+  assert.equal(introAt(d+d/4).done,false);
+  assert.ok(introAt(d+d/4).progress>0);
+});
+test('the loop has no lead-in, hold phase or discontinuous cycle boundary',async()=>{
+  const {introAt,INTRO_TIMING:t,INTRO_DURATION:d}=await import('../src/data/journey-math.mjs');
+  assert.ok(introAt(100).progress>0);
+  assert.ok(introAt(t.forward+100).progress<1);
+  for(const time of [t.forward,d]) assert.ok(Math.abs(introAt(time-.01).progress-introAt(time+.01).progress)<.00001);
+  for(let time=0;time<=d*3;time+=31){const p=introAt(time).progress;assert.ok(p>=0&&p<=1);}
+});
