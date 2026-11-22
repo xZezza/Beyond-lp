@@ -1,8 +1,10 @@
 import { clamp, mix, smooth, seededRandom } from '../data/journey-math.mjs';
 import { CosmicSprites } from './cosmic-sprites';
-import { COSMOS, cameraAt } from '../data/nested-camera.mjs';
+import { COSMOS, cameraAt, earthAt } from '../data/nested-camera.mjs';
 import { EarthGlobe } from './earth-globe';
 import { GalaxyCloud } from './galaxy-cloud';
+import {PLANETS,orbitalPosition} from '../data/orbital-motion.mjs';
+import {makePlanet} from './planet-surfaces';
 
 type Assets = { hole: HTMLImageElement; field: HTMLImageElement; galaxy: HTMLImageElement; earth: HTMLImageElement };
 type Star = { x: number; y: number; depth: number; size: number; alpha: number };
@@ -18,6 +20,7 @@ export class CosmicRenderer {
   private sprites = new CosmicSprites();
   private globe?: EarthGlobe;
   private galaxy = new GalaxyCloud();
+  private planets=new Map<string,EarthGlobe>();
 
   constructor(private canvas: HTMLCanvasElement, private assets: Assets, private motion?: HTMLVideoElement) {
     const context = canvas.getContext('2d', { alpha: false });
@@ -27,7 +30,7 @@ export class CosmicRenderer {
     this.stars = Array.from({ length: 850 }, () => ({ x: random() * 2 - 1, y: random() * 2 - 1, depth: .25 + random() * .75, size: .3 + random() * 1.4, alpha: .15 + random() * .7 }));
   }
 
-  hasLiveMotion(progress: number) {return progress>.64||(progress<.30&&!!this.motion&&!this.motion.paused&&this.motion.readyState>=2);}
+  hasLiveMotion(progress: number) {return progress>.58||(progress<.30&&!!this.motion&&!this.motion.paused&&this.motion.readyState>=2);}
 
   prepare(image: HTMLImageElement,kind: 'hole'|'galaxy'|'field'|'earth') {
     if(this.ready(image)) this.sprites.get(image,kind);
@@ -61,7 +64,7 @@ export class CosmicRenderer {
     const reveal=mix(.012,1,smooth(.07,.25,p));
     if (starAlpha > 0) this.drawStars(p, starAlpha, anchorX, anchorY);
 
-    const camera=cameraAt(p,w,h);
+    const camera=cameraAt(p,w,h,time);
     const point=(x:number,y:number)=>({x:anchorX+(x-camera.x)*camera.scale,y:anchorY+(y-camera.y)*camera.scale});
     const field=point(COSMOS.field.x,COSMOS.field.y);
     const fieldSize=COSMOS.field.size*camera.scale;
@@ -83,10 +86,11 @@ export class CosmicRenderer {
     if(systemRadius>.15) {
       // The Sun is already present on the spiral arm before we enter it.
       ctx.globalAlpha=1;this.softGlow(solar.x,solar.y,Math.max(3,systemRadius*.30),'#e9993f');
-      if(systemRadius>3)this.drawSolarSystem(solar.x,solar.y,systemRadius,systemRadius/Math.min(w*(mobile?.58:.32),h*.43),1,p,mobile);
+      if(systemRadius>3)this.drawSolarSystem(solar.x,solar.y,systemRadius,systemRadius/Math.min(w*(mobile?.58:.32),h*.43),1,p,mobile,time);
       else {ctx.fillStyle='#ffe2ab';ctx.beginPath();ctx.arc(solar.x,solar.y,Math.max(.5,systemRadius*.07),0,TAU);ctx.fill();}
     }
-    const earth=point(COSMOS.earth.x,COSMOS.earth.y);
+    const earthWorld=earthAt(time);
+    const earth=point(earthWorld.x,earthWorld.y);
     const radius=COSMOS.earth.radius*camera.scale;
     if(radius>.3&&this.ready(this.assets.earth)) {
       ctx.globalAlpha=1;
@@ -126,18 +130,9 @@ export class CosmicRenderer {
     }
   }
 
-  private drawSolarSystem(x: number, y: number, radius: number, zoom: number, alpha: number, progress: number, mobile: boolean) {
+  private drawSolarSystem(x: number, y: number, radius: number, zoom: number, alpha: number, progress: number, mobile: boolean, time:number) {
     const ctx = this.ctx;
-    const planets = [
-      {name:'Mercury',orbit:.14,angle:2.5,size:3,color:'#bcb6ae'},
-      {name:'Venus',orbit:.23,angle:.6,size:5,color:'#dfc59d'},
-      {name:'Earth',orbit:.34,angle:-1.05,size:mobile?6:8,color:'#75b9e0'},
-      {name:'Mars',orbit:.44,angle:2.9,size:4,color:'#dc8869'},
-      {name:'Jupiter',orbit:.60,angle:-2.0,size:16,color:'#d8b99c'},
-      {name:'Saturn',orbit:.76,angle:.45,size:12,color:'#d2bc94'},
-      {name:'Uranus',orbit:.90,angle:2.5,size:8,color:'#8dc6cb'},
-      {name:'Neptune',orbit:1.06,angle:-.7,size:8,color:'#648de8'},
-    ];
+    const planets=PLANETS;
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.translate(x, y);
@@ -151,23 +146,20 @@ export class CosmicRenderer {
     sun.addColorStop(0, '#fff9da'); sun.addColorStop(.55, '#ffdc8c'); sun.addColorStop(1, '#e67d22');
     ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(0, 0, sunRadius, 0, TAU); ctx.fill();
     for (const planet of planets) {
-      const px = Math.cos(planet.angle) * planet.orbit * radius;
-      const py = Math.sin(planet.angle) * planet.orbit * radius * .48;
+      const {x:px,y:py}=orbitalPosition(planet,time,radius);
       if(Math.abs(px)>this.width*3||Math.abs(py)>this.height*3)continue;
       const r = planet.size * (mobile ? .8 : 1) * zoom;
       if (planet.name !== 'Earth') {
-        const planetFill = ctx.createRadialGradient(px - r * .36, py - r * .4, 0, px, py, r);
-        planetFill.addColorStop(0, planet.color); planetFill.addColorStop(.55, planet.color); planetFill.addColorStop(1, '#17131e');
         if (planet.name === 'Saturn') {
           ctx.strokeStyle = '#e3d0a4a0'; ctx.lineWidth = r * .35;
-          ctx.beginPath(); ctx.ellipse(px, py, r * 2.0, r * .55, -.25, 0, TAU); ctx.stroke();
+          ctx.beginPath(); ctx.ellipse(px,py,r*2,r*.55,-.25,0,TAU);ctx.stroke();
         }
-        ctx.fillStyle = planetFill; ctx.beginPath(); ctx.arc(px, py, r, 0, TAU); ctx.fill();
-        if (planet.name === 'Jupiter') {
-          ctx.save(); ctx.beginPath(); ctx.arc(px, py, r, 0, TAU); ctx.clip();
-          ctx.strokeStyle = '#805c4c88'; ctx.lineWidth = 2;
-          for (let band = -2; band <= 2; band++) {ctx.beginPath();ctx.moveTo(px-r,py+band*4);ctx.lineTo(px+r,py+band*4+2);ctx.stroke();}
-          ctx.restore();
+        let globe=this.planets.get(planet.name);
+        if(!globe){globe=makePlanet(planet.name,planet.spin);this.planets.set(planet.name,globe);}
+        ctx.drawImage(globe.render(time),px-r,py-r,r*2,r*2);
+        if(planet.name==='Saturn') {
+          ctx.strokeStyle='#e3d0a488';ctx.lineWidth=r*.25;
+          ctx.beginPath();ctx.ellipse(px,py,r*2,r*.55,-.25,0,Math.PI);ctx.stroke();
         }
       }
       if (radius > 60 && progress > .64 && progress < .85 && (!mobile || ['Earth','Saturn','Neptune'].includes(planet.name))) {

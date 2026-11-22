@@ -87,6 +87,11 @@
       "name": "Volumetric spiral galaxy",
       "type": "procedural 3D particle illustration projected to Canvas 2D",
       "notes": "Four spiral arms, warm central bulge, stars and diffuse dust distributed in three dimensions with perspective and near clipping. Illustrative geometry, not a measured Milky Way model. The credited NASA/ESO image remains only in static scenes."
+    },
+    {
+      "name": "Rotating planets and orbital motion",
+      "type": "procedural spherical surface and schematic orbit animation",
+      "notes": "All eight planets orbit and spin using individual accelerated cinematic periods. Non-Earth surface details are illustrative procedural textures; Earth uses the separately credited NASA global mosaic. The moving Earth position is shared with the camera to preserve the nested approach. Not real-time ephemerides or measured rotation rates."
     }
   ]
 }

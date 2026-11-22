@@ -1,4 +1,5 @@
 import { clamp, CHAPTER_STOPS } from './journey-math.mjs';
+import {PLANETS,orbitalPosition} from './orbital-motion.mjs';
 
 // Compressed, imaginative coordinates. Every destination is a child of the
 // previous view; none is introduced as a replacement full-screen slide.
@@ -9,7 +10,13 @@ const system={x:galaxy.x+galaxySize*.235,y:galaxy.y+galaxySize*.052,radius:galax
 const earth={x:system.x+Math.cos(-1.05)*.34*system.radius,y:system.y+Math.sin(-1.05)*.34*system.radius*.48,radius:system.radius*.024};
 export const COSMOS=Object.freeze({hole:{x:0,y:0,size:1},field:{x:0,y:0,size:fieldSize},galaxy,system,earth});
 
-export function cameraAt(progress,width,height) {
+export function earthAt(time=0) {
+  const offset=orbitalPosition(PLANETS[2],time,system.radius);
+  return {x:system.x+offset.x,y:system.y+offset.y,radius:earth.radius};
+}
+
+export function cameraAt(progress,width,height,time=0) {
+  const earth=earthAt(time);
   const mobile=width<720;
   const targets=[
     {x:0,y:0,scale:width*(mobile?1.9:1.2)},

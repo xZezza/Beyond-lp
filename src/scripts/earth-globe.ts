@@ -11,14 +11,15 @@ export class EarthGlobe {
   private map:Uint8ClampedArray;
   private mapWidth=2048;
   private previous=-Infinity;
-  constructor(image:HTMLImageElement) {
-    const n=640;this.canvas.width=this.canvas.height=n;
+  private period:number;
+  constructor(image:CanvasImageSource,resolution=640,period=90000,tilt=.18) {
+    const n=resolution;this.period=period;this.canvas.width=this.canvas.height=n;
     this.ctx=this.canvas.getContext('2d')!;this.frame=this.ctx.createImageData(n,n);
     this.u=new Float32Array(n*n);this.v=new Uint32Array(n*n);this.light=new Float32Array(n*n);
     const texture=document.createElement('canvas');texture.width=this.mapWidth;texture.height=this.mapWidth/2;
     const ctx=texture.getContext('2d',{willReadFrequently:true})!;
     ctx.drawImage(image,0,0,texture.width,texture.height);this.map=ctx.getImageData(0,0,texture.width,texture.height).data;
-    const tilt=.18,c=Math.cos(tilt),s=Math.sin(tilt);
+    const c=Math.cos(tilt),s=Math.sin(tilt);
     for(let y=0;y<n;y++)for(let x=0;x<n;x++) {
       const i=y*n+x,nx=(x+.5-n/2)/(n/2-2),ny=-(y+.5-n/2)/(n/2-2),r2=nx*nx+ny*ny;
       if(r2>=1)continue;
@@ -31,7 +32,7 @@ export class EarthGlobe {
   }
   render(time:number) {
     if(time-this.previous<33)return this.canvas;this.previous=time;
-    const shift=time/90000;
+    const shift=((time/this.period)%1+1)%1;
     const out=this.frame.data,src=this.map,w=this.mapWidth;
     for(let i=0;i<this.u.length;i++) {
       if(!out[i*4+3])continue;

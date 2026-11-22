@@ -28,3 +28,5 @@
 - Latest art direction: the interactive galaxy must have volume and perspective, not a single flat photograph. Use a procedural spiral of stars/dust in depth; keep the NASA/ESO artwork only as the still-scene fallback. At the opening, the black-hole interior should be almost opaque black, with the nested universe becoming visible only while approaching.
 
 - Blend the distant galaxy into the wider universe: lower distant contrast, diffuse arm edges and a scattered 3D outer population shared with the surrounding field, rather than a bright isolated spiral badge.
+
+- All eight Solar System planets must rotate. Animate axial spin and orbital travel with gentle compressed cinematic periods. The camera and Earth renderer must use the same time-dependent orbital position so the nested zoom never jumps away from the moving planet. Use illustrative procedural surfaces for the small non-Earth planets and preserve NASA attribution for Earth.

@@ -43,3 +43,10 @@ Browser QA used the existing localhost preview at 1280×800 and 390×844. Checke
 Validation: 17 passing tests, including camera continuity, monotonic magnification, nested destination centres and Earth's orbital alignment. Astro check and static build/resource audit pass. Existing non-blocking dependency annotation warnings remain. Updated review screenshots: `output/landing/smooth/black-hole-dark.jpg`, `galaxy-volume.jpg`, `earth-rotation-a.jpg`, `earth-rotation-b.jpg`, and `mobile-earth.jpg` in the companion workspace. A new self-contained HTML review artifact includes local fonts, textures and the video. File-protocol browser automation remains unavailable; visual QA used localhost.
 
 Not pushed or deployed. The separate Beyond cockpit app is unchanged.
+
+
+## Animated Solar System follow-up — 22 November 2026
+
+All eight planets now orbit and spin with individual illustrative periods. Venus and Uranus use opposite axial rotation; the other small planets have rotating procedural surfaces, with visible cloud bands and Jupiter's illustrative red spot. Earth retains NASA map data. The same time-dependent Earth position drives its orbit and the nested zoom camera.
+
+19 tests pass, including every planet's movement, closed elliptical trajectories, continuity across orbit wrap and the camera following Earth at several orbital phases. Astro check and build/resource audit pass. At 1280×800, two captures at unchanged scroll show all planets changing position; the jump to Earth reaches the moving planet and keeps it centred. No new console errors after a fresh load. Temporary viewport override was reset. Screenshots are in `output/landing/smooth/solar-orbits-a.jpg` and `solar-orbits-b.jpg`. Static/reduced-motion mode remains still. No deployment.

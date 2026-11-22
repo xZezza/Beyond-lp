@@ -71,3 +71,5 @@ A single logarithmic camera magnifies nested coordinates: galaxy field inside th
 “Use still scenes”, the system reduced-motion preference and unavailable canvas select ordinary static sections. A direct later-chapter URL skips autoplay. Without JavaScript, all content and imagery remain readable. The opening subtitle, duplicate start/skip buttons and route label have been removed at the user's request; the chapter navigation and exploration controls remain.
 
 The route, compressed scales, spiral and lighting are illustrative. The black-hole universe is speculative; this is not a measured flight path. Provenance for photos, illustrations, the global map and the derived video is in `public/assets/sources.json`, with visible on-page credits. The prototype remains local until a release is requested.
+
+All eight planets orbit the Sun and spin on their axes in the enhanced Solar System. Periods and other planetary surfaces are illustrative; Earth retains the NASA surface map. `orbital-motion.mjs` provides the same moving Earth coordinate to the camera and the scene. Still/reduced-motion views do not animate.
