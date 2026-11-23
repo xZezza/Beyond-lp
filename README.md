@@ -77,3 +77,5 @@ All eight planets orbit the Sun and spin on their axes in the enhanced Solar Sys
 The black-hole loop now uses the earlier, visibly changing NASA camera angle (seconds 9.5–12 and back), instead of the almost fixed final segment. Its matching poster has the same 3200×2334 crop. Muted inline autoplay starts the animation on opening; static mode still disables playback.
 
 The entry-only compositing in `entry-composition.mjs` frames the existing universe texture to cover the horizon before it becomes visible. It removes the small circular clip and eases the intact black-hole movie out continuously. Later scene framing and playback are unchanged.
+
+The thin inner orange ring is artistically suppressed in the black-hole video/poster assets. The existing renderer and entry transition are unchanged. `scripts/clean-black-hole-ring.py` reproduces the local media edit from the original derived clip and poster, using ffmpeg only as an optional asset-preparation tool. No runtime dependency was added. The source credit records this adaptation.

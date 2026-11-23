@@ -37,3 +37,5 @@
 - The user rejected the attempted aperture and inner-ring masks because they cut and distort the disc. Restore the previously accepted black-hole rendering; do not retain those visual masks. The requested entry smoothing and ring removal remain unresolved design work.
 
 - Current bounded request (23 November): only repair the entry into the universe. Fill the black-hole centre with the existing universe texture at sufficient scale, with no small-circle clipping or cuts. Keep the accepted movie completely intact and soften its former hard exit. Do not change the camera route, later scenes, content, planetary animation or one-shot playback.
+
+- Latest request: remove only the thin inner orange ring shown in the screenshot. Use selectively edited derived video/poster assets; preserve the accepted renderer, completed entry transition, route and timing. Do not reintroduce runtime circular or horizontal crop masks. Keep the NASA source credit and disclose the artistic media adaptation.

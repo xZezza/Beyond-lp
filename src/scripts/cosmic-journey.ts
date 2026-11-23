@@ -23,7 +23,7 @@ export function initCosmicJourney(root: HTMLElement) {
   let renderer: CosmicRenderer|undefined;
   const motion=root.querySelector<HTMLVideoElement>('.journey-motion-source');
   const assets={
-    hole:load('/assets/black-hole-detail.jpg','hole'),
+    hole:load('/assets/black-hole-detail-clean.jpg','hole'),
     field:load('/assets/webb-deep-field.webp','field'),
     galaxy:load('/assets/milky-way-illustration.webp','galaxy'),
     earth:load('/assets/earth-surface-nasa.jpg'),
