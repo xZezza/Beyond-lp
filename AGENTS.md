@@ -35,3 +35,5 @@
 
 - Latest playback correction supersedes continuous looping: autoplay makes one forward trip to Earth and one return to the horizon, then hands over to manual exploration. Only explicit replay restarts it. Keep the black-hole video animated at rest.
 - The user rejected the attempted aperture and inner-ring masks because they cut and distort the disc. Restore the previously accepted black-hole rendering; do not retain those visual masks. The requested entry smoothing and ring removal remain unresolved design work.
+
+- Current bounded request (23 November): only repair the entry into the universe. Fill the black-hole centre with the existing universe texture at sufficient scale, with no small-circle clipping or cuts. Keep the accepted movie completely intact and soften its former hard exit. Do not change the camera route, later scenes, content, planetary animation or one-shot playback.

@@ -66,3 +66,10 @@ Autoplay now makes exactly one trip to Earth and back, rests at the horizon and 
 The user rejected the attempted horizon aperture and ring removal: their masks introduced visible cuts in the accretion disc. Restored the previously accepted renderer in full and removed those experimental helpers/tests. This rollback does not claim to solve the requested entry smoothing or inner-ring removal; those remain design work.
 
 Validation after rollback: Astro check has no errors, warnings or hints; all 19 tests and the static build/resource audit pass. The renderer is identical to the last accepted commit, so none of the experimental cuts remain. Small browser anchor realignments near the top no longer interrupt autoplay; native input still takes control.
+
+
+## Entry-only correction — 23 November 2026
+
+Bounded change: enlarge the existing universe texture enough to fill the entire black-hole centre while entering, eliminate the small circular image clip, and replace the abrupt movie cutoff with a continuous easing of the intact disc light. No aperture, ring-removal mask, video edit or disc crop was added. The original camera, captions, later 3D galaxy, planetary animation and one-shot playback are unchanged. Once the native field is sufficiently large, its exact original framing is restored.
+
+Two new tests verify corner coverage at the moving camera centre, nondecreasing image magnification, original later-scene framing, and continuity across the former .30 cutoff. All 21 tests pass; Astro check has no errors/warnings/hints; production build/resource audit pass, with the existing dependency annotation warnings. Browser inspection covered entry positions .18 and .295 on desktop and .19 on 390×844 mobile, with no horizontal overflow. The video remains intact without the rejected horizontal mask cuts. Review captures are in `output/landing/entry/`. Updated standalone preview aliases contain this version. No publication.

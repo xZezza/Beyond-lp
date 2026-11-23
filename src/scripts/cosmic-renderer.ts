@@ -5,6 +5,7 @@ import { EarthGlobe } from './earth-globe';
 import { GalaxyCloud } from './galaxy-cloud';
 import {PLANETS,orbitalPosition} from '../data/orbital-motion.mjs';
 import {makePlanet} from './planet-surfaces';
+import {entryFieldSize,entryDiscOpacity} from '../data/entry-composition.mjs';
 
 type Assets = { hole: HTMLImageElement; field: HTMLImageElement; galaxy: HTMLImageElement; earth: HTMLImageElement };
 type Star = { x: number; y: number; depth: number; size: number; alpha: number };
@@ -30,7 +31,7 @@ export class CosmicRenderer {
     this.stars = Array.from({ length: 850 }, () => ({ x: random() * 2 - 1, y: random() * 2 - 1, depth: .25 + random() * .75, size: .3 + random() * 1.4, alpha: .15 + random() * .7 }));
   }
 
-  hasLiveMotion(progress: number) {return progress>.58||(progress<.30&&!!this.motion&&!this.motion.paused&&this.motion.readyState>=2);}
+  hasLiveMotion(progress: number) {return progress>.58||(progress<.35&&!!this.motion&&!this.motion.paused&&this.motion.readyState>=2);}
 
   prepare(image: HTMLImageElement,kind: 'hole'|'galaxy'|'field'|'earth') {
     if(this.ready(image)) this.sprites.get(image,kind);
@@ -71,10 +72,11 @@ export class CosmicRenderer {
     // This field exists inside the horizon from the first frame. The camera
     // enlarges it in place instead of dissolving to another full-screen image.
     if(this.ready(this.assets.field)&&fieldSize>1) {
-      ctx.save();ctx.beginPath();ctx.arc(field.x,field.y,fieldSize*.50,0,TAU);ctx.clip();
+      ctx.save();
+      const imageSize=entryFieldSize(fieldSize,w,h,field.x,field.y,anchorX,anchorY);
       const detail=1-smooth(h*3,h*6,fieldSize);
       ctx.globalAlpha=detail*reveal;
-      ctx.drawImage(this.sprites.get(this.assets.field,'field'),field.x-fieldSize/2,field.y-fieldSize/2,fieldSize,fieldSize);
+      ctx.drawImage(this.sprites.get(this.assets.field,'field'),field.x-imageSize/2,field.y-imageSize/2,imageSize,imageSize);
       ctx.restore();
     }
 
@@ -100,12 +102,13 @@ export class CosmicRenderer {
       if(!this.globe)this.globe=new EarthGlobe(this.assets.earth);
       ctx.drawImage(this.globe.render(time),earth.x-radius,earth.y-radius,radius*2,radius*2);
     }
-    // The accretion disc stays around its child universe until its rim leaves
-    // the viewport. No full-screen scene swap or black-hole opacity dissolve.
+    // The movie remains intact. Its outer light overlaps the already filled
+    // universe smoothly, replacing the old single-frame cutoff at .30.
     const hole=point(0,0),holeSize=camera.scale;
-    if(p<.30&&this.ready(this.assets.hole)) {
+    const discOpacity=entryDiscOpacity(p);
+    if(discOpacity>0&&this.ready(this.assets.hole)) {
       const height=holeSize*this.assets.hole.naturalHeight/this.assets.hole.naturalWidth;
-      ctx.globalAlpha=1;ctx.globalCompositeOperation='screen';
+      ctx.globalAlpha=discOpacity;ctx.globalCompositeOperation='screen';
       ctx.drawImage(this.motion&&this.motion.readyState>=2?this.motion:this.sprites.get(this.assets.hole,'hole'),hole.x-holeSize/2,hole.y-height/2,holeSize,height);
       ctx.globalCompositeOperation='source-over';
     }

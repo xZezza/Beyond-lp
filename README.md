@@ -75,3 +75,5 @@ The route, compressed scales, spiral and lighting are illustrative. The black-ho
 All eight planets orbit the Sun and spin on their axes in the enhanced Solar System. Periods and other planetary surfaces are illustrative; Earth retains the NASA surface map. `orbital-motion.mjs` provides the same moving Earth coordinate to the camera and the scene. Still/reduced-motion views do not animate.
 
 The black-hole loop now uses the earlier, visibly changing NASA camera angle (seconds 9.5–12 and back), instead of the almost fixed final segment. Its matching poster has the same 3200×2334 crop. Muted inline autoplay starts the animation on opening; static mode still disables playback.
+
+The entry-only compositing in `entry-composition.mjs` frames the existing universe texture to cover the horizon before it becomes visible. It removes the small circular clip and eases the intact black-hole movie out continuously. Later scene framing and playback are unchanged.
