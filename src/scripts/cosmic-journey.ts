@@ -1,5 +1,6 @@
 import { CHAPTER_STOPS, chapterAt, scrollProgress, scrollForChapter, introAt } from '../data/journey-math.mjs';
 import { CosmicRenderer } from './cosmic-renderer';
+import {holeShouldPlay} from '../data/earth-interaction.mjs';
 
 /** A skippable automatic preview hands control to native scroll and chapter links. */
 export function initCosmicJourney(root: HTMLElement) {
@@ -14,24 +15,27 @@ export function initCosmicJourney(root: HTMLElement) {
   const attribution=root.querySelector<HTMLElement>('.journey-attribution');
   const status=root.querySelector<HTMLElement>('.journey-sr-status');
   const scrollHint=root.querySelector<HTMLElement>('.journey-scroll-hint');
+  const earthControl=root.querySelector<HTMLButtonElement>('.earth-interaction');
+  const earthHint=root.querySelector<HTMLElement>('.earth-rotate-hint');
   if(!canvas||!stage||!toggle||chapters.length!==CHAPTER_STOPS.length) return;
   const reducedQuery=matchMedia('(prefers-reduced-motion: reduce)');
   let manuallyStill=false,enhanced=false,disposed=false,interacted=false;
   let active=-1,caption=-1,current=0,target=0,frame=0,lastTime=0;
   let chapterGlide=false,intro=false,introElapsed=0,previewFinished=false;
   let introScrollTarget:number|null=null;
+  let holeReturned=false,motionWanted=false,lastHud=0,lastScrub=-1,lastAria='',lastEarthBox='',lastEarthState='',lastEarthPose='';
+  let statsSince=0,statsFrames=0,statsDraw=0,statsPeak=0;
   let renderer: CosmicRenderer|undefined;
   const motion=root.querySelector<HTMLVideoElement>('.journey-motion-source');
   const assets={
-    hole:load('/assets/black-hole-detail-clean.jpg','hole'),
+    hole:load('/assets/black-hole-detail-clean.jpg'),
     field:load('/assets/webb-deep-field-full.jpg'),
-    galaxy:load('/assets/milky-way-illustration.webp','galaxy'),
     earth:load('/assets/earth-surface-nasa.jpg'),
   };
 
-  function load(url:string,kind?:'hole'|'galaxy'|'field'|'earth') {
+  function load(url:string) {
     const image=new Image();image.decoding='async';image.src=url;
-    image.addEventListener('load',()=>{if(kind)renderer?.prepare(image,kind);requestDraw();});
+    image.addEventListener('load',requestDraw);
     return image;
   }
   function travel(){return Math.max(0,root.offsetHeight-stage!.offsetHeight);}
@@ -52,9 +56,41 @@ export function initCosmicJourney(root: HTMLElement) {
     if(attribution)attribution.textContent=chapters[index].dataset.credit||'';
     if(status)status.textContent=(intro?'Previewing ':'')+(nav[index].textContent?.trim()||'');
   }
-  function updateProgress() {
+  function updateProgress(now=performance.now(),force=false) {
     root.style.setProperty('--travel-progress',String(current));
-    if(scrubber){scrubber.value=String(Math.round(current*1000));scrubber.setAttribute('aria-valuetext',`${nav[chapterAt(current)].textContent?.trim()}, ${Math.round(current*100)}%`);}
+    if(!force&&now-lastHud<100)return;lastHud=now;
+    if(scrubber){
+      const value=Math.round(current*1000),label=`${nav[chapterAt(current)].textContent?.trim()}, ${Math.round(current*100)}%`;
+      if(value!==lastScrub){scrubber.value=String(value);lastScrub=value;}
+      if(label!==lastAria){scrubber.setAttribute('aria-valuetext',label);lastAria=label;}
+    }
+  }
+  function syncHoleMotion() {
+    if(!motion)return;
+    const rect=root.getBoundingClientRect();
+    const wanted=holeShouldPlay({enhanced,visible:!document.hidden&&rect.bottom>0&&rect.top<innerHeight,progress:current,returned:holeReturned});
+    root.dataset.holeMotion=holeReturned?'parked':wanted?'playing':'paused';
+    if(wanted===motionWanted)return;motionWanted=wanted;
+    if(wanted){motion.muted=true;void motion.play().catch(()=>{motionWanted=false;});}else motion.pause();
+  }
+  function updateEarthControl() {
+    if(!earthControl||!renderer)return;
+    const enabled=enhanced&&current>=.90;
+    if(earthControl.hidden===enabled){earthControl.hidden=!enabled;if(earthHint)earthHint.hidden=!enabled;}
+    if(!enabled)return;
+    const {x,y,radius}=renderer.earthHitArea;
+    const box=[Math.round(x-radius),Math.round(y-radius),Math.round(radius*2)].join(',');
+    if(box!==lastEarthBox){lastEarthBox=box;earthControl.style.transform=`translate3d(${x-radius}px,${y-radius}px,0)`;earthControl.style.width=earthControl.style.height=`${radius*2}px`;}
+    const spinning=renderer.earthSpinning;
+    const state=String(spinning);
+    if(state!==lastEarthState){lastEarthState=state;
+      earthControl.setAttribute('aria-pressed',String(!spinning));
+      earthControl.setAttribute('aria-label',spinning?'Pause Earth rotation':'Resume Earth rotation');
+      if(earthHint)earthHint.textContent=spinning?'Drag to rotate · click to pause':'Drag to rotate · click to resume';
+    }
+    const {yaw,pitch}=renderer.earthOrientation,pose=`${yaw},${pitch}`;
+    if(pose!==lastEarthPose){lastEarthPose=pose;root.dataset.earthYaw=yaw.toFixed(4);root.dataset.earthPitch=pitch.toFixed(4);}
+    if(root.dataset.earthRenderer!==renderer.earthBackend)root.dataset.earthRenderer=renderer.earthBackend;
   }
   function playbackUI() {
     root.dataset.playback=intro?'intro':'manual';
@@ -66,17 +102,17 @@ export function initCosmicJourney(root: HTMLElement) {
   function endIntro(reset=false) {
     if(!intro)return;
     intro=false;previewFinished=true;lastTime=0;introScrollTarget=null;
-    if(reset){current=target=0;window.scrollTo({top:position(),behavior:'instant'});}
-    playbackUI();requestDraw();
+    if(reset){holeReturned=true;current=target=0;window.scrollTo({top:position(),behavior:'instant'});}
+    playbackUI();syncHoleMotion();requestDraw();
   }
   function startIntro() {
     if(!enhanced||reducedQuery.matches)return;
-    intro=true;introElapsed=0;current=target=0;lastTime=0;chapterGlide=false;
-    if(motion&&motion.readyState>=1){motion.currentTime=0;void motion.play().catch(()=>undefined);}
+    intro=true;holeReturned=false;introElapsed=0;current=target=0;lastTime=0;chapterGlide=false;
+    if(motion&&motion.readyState>=1)motion.currentTime=0;
     introScrollTarget=position();
     history.replaceState(null,'','#horizon');
     window.scrollTo({top:introScrollTarget,behavior:'instant'});
-    playbackUI();requestDraw();
+    playbackUI();syncHoleMotion();requestDraw();
   }
   function tick(now:number) {
     frame=0;
@@ -92,7 +128,14 @@ export function initCosmicJourney(root: HTMLElement) {
       current+=(target-current)*(1-Math.exp(-dt/(chapterGlide?210:95)));
       if(Math.abs(target-current)<.00005){current=target;chapterGlide=false;}
     }
-    renderer?.draw(current,now);updateProgress();updateChapter(chapterAt(current));
+    syncHoleMotion();
+    const drawStart=import.meta.env.DEV?performance.now():0;
+    renderer?.draw(current,now);updateProgress(now);updateChapter(chapterAt(current));updateEarthControl();
+    if(import.meta.env.DEV){
+      const cost=performance.now()-drawStart;statsFrames++;statsDraw+=cost;statsPeak=Math.max(statsPeak,cost);
+      if(!statsSince)statsSince=now;
+      if(now-statsSince>=1000){root.dataset.renderStats=JSON.stringify({fps:Math.round(statsFrames*1000/(now-statsSince)),meanMs:+(statsDraw/statsFrames).toFixed(1),peakMs:+statsPeak.toFixed(1)});statsSince=now;statsFrames=0;statsDraw=0;statsPeak=0;}
+    }
     const live=renderer?.hasLiveMotion(current)&&root.getBoundingClientRect().bottom>0&&root.getBoundingClientRect().top<innerHeight;
     if(intro||current!==target||live) {if(!frame)frame=requestAnimationFrame(tick);} else lastTime=0;
   }
@@ -110,7 +153,7 @@ export function initCosmicJourney(root: HTMLElement) {
     if(enhanced) {
       chapterGlide=!instant;
       window.scrollTo({top:scrollForChapter(position(),travel(),index),behavior:'instant'});
-      if(instant){current=target=CHAPTER_STOPS[index];renderer?.draw(current);updateProgress();updateChapter(index);}
+      if(instant){current=target=CHAPTER_STOPS[index];renderer?.draw(current);updateProgress(performance.now(),true);updateChapter(index);updateEarthControl();}
       requestDraw();
     } else chapters[index].scrollIntoView({block:'start',behavior:'instant'});
   }
@@ -128,10 +171,34 @@ export function initCosmicJourney(root: HTMLElement) {
     interacted=true;endIntro();chapterGlide=false;
     current=target=Number(scrubber.value)/1000;
     window.scrollTo({top:position()+travel()*current,behavior:'instant'});
-    renderer?.draw(current);updateProgress();updateChapter(chapterAt(current));requestDraw();
+    renderer?.draw(current);updateProgress(performance.now(),true);updateChapter(chapterAt(current));updateEarthControl();requestDraw();
   });
   const replay=root.querySelector<HTMLButtonElement>('[data-journey-replay]');
   if(replay){replay.hidden=false;replay.addEventListener('click',()=>{if(enhanced)startIntro();else jump(0);});}
+  let earthPointer:number|null=null,earthX=0,earthY=0,earthTravel=0,earthDragged=false;
+  function earthDown(event:PointerEvent) {
+    if(event.button!==0||!earthControl||earthPointer!==null)return;
+    takeControl();earthPointer=event.pointerId;earthX=event.clientX;earthY=event.clientY;earthTravel=0;earthDragged=false;
+    earthControl.setPointerCapture(event.pointerId);earthControl.classList.add('is-dragging');
+  }
+  function earthMove(event:PointerEvent) {
+    if(event.pointerId!==earthPointer)return;
+    const dx=event.clientX-earthX,dy=event.clientY-earthY;earthX=event.clientX;earthY=event.clientY;
+    earthTravel+=Math.hypot(dx,dy);if(earthTravel<3)return;
+    earthDragged=true;renderer?.rotateEarth(dx,dy);updateEarthControl();requestDraw();event.preventDefault();
+  }
+  function earthUp(event:PointerEvent) {
+    if(event.pointerId!==earthPointer)return;earthPointer=null;earthControl?.classList.remove('is-dragging');
+    if(earthControl?.hasPointerCapture(event.pointerId))earthControl.releasePointerCapture(event.pointerId);
+  }
+  function earthClick() {if(earthDragged){earthDragged=false;return;}takeControl();renderer?.toggleEarthSpin();updateEarthControl();requestDraw();}
+  function earthKey(event:KeyboardEvent) {
+    const delta:Record<string,number[]>={ArrowLeft:[-24,0],ArrowRight:[24,0],ArrowUp:[0,-24],ArrowDown:[0,24]};
+    if(!delta[event.key])return;event.preventDefault();event.stopPropagation();takeControl();renderer?.rotateEarth(...delta[event.key] as [number,number]);updateEarthControl();requestDraw();
+  }
+  earthControl?.addEventListener('pointerdown',earthDown);earthControl?.addEventListener('pointermove',earthMove);
+  earthControl?.addEventListener('pointerup',earthUp);earthControl?.addEventListener('pointercancel',earthUp);
+  earthControl?.addEventListener('click',earthClick);earthControl?.addEventListener('keydown',earthKey);
   function resize(){chapterGlide=false;if(enhanced){renderer?.resize(stage!.clientWidth,stage!.clientHeight);if(!intro)current=scrollProgress(root.getBoundingClientRect().top,travel());requestDraw();}}
   function setMode(preserve=false) {
     const oldActive=Math.max(active,0);
@@ -142,26 +209,29 @@ export function initCosmicJourney(root: HTMLElement) {
     toggle!.textContent=reducedQuery.matches?'Still scenes · system preference':!renderer?'Still scenes':still?'Enable the zoom':'Use still scenes';toggle!.setAttribute('aria-pressed',String(still));
     if(scrubber)scrubber.hidden=still;
     active=-1;caption=-1;updateChapter(oldActive);
-    if(enhanced){if(motion&&!reducedQuery.matches){motion.muted=true;void motion.play().catch(()=>undefined);}resize();}else{motion?.pause();cancelAnimationFrame(frame);frame=0;chapters.forEach(chapter=>{chapter.inert=false;chapter.removeAttribute('aria-hidden');});}
+    if(enhanced){syncHoleMotion();resize();}else{motion?.pause();cancelAnimationFrame(frame);frame=0;chapters.forEach(chapter=>{chapter.inert=false;chapter.removeAttribute('aria-hidden');});}
+    syncHoleMotion();updateEarthControl();
     if(preserve)jump(oldActive,true);
   }
   function onPreference(){setMode(true);}
-  function onVisibility(){lastTime=0;if(document.hidden)motion?.pause();else if(enhanced&&motion)void motion.play().catch(()=>undefined);requestDraw();}
+  function onVisibility(){lastTime=0;syncHoleMotion();requestDraw();}
   toggle.addEventListener('click',()=>{interacted=true;manuallyStill=!manuallyStill;setMode(true);});
   reducedQuery.addEventListener('change',onPreference);
   window.addEventListener('hashchange',onHashChange);window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',resize,{passive:true});
   window.addEventListener('wheel',takeControl,{passive:true});window.addEventListener('touchstart',takeControl,{passive:true});window.addEventListener('pointerdown',onPointer,{passive:true});window.addEventListener('keydown',onKey);
   document.addEventListener('click',onDocumentClick);document.addEventListener('visibilitychange',onVisibility);
-  motion?.addEventListener('loadeddata',requestDraw);motion?.addEventListener('playing',requestDraw);
+  motion?.addEventListener('loadeddata',()=>{syncHoleMotion();requestDraw();});motion?.addEventListener('playing',requestDraw);
   try{renderer=new CosmicRenderer(canvas,assets,motion||undefined);}catch{renderer=undefined;}
   setMode();playbackUI();
   const initial=chapters.findIndex(chapter=>'#'+chapter.id===location.hash);if(initial>=0)jump(initial,true,false);
   const observer=new ResizeObserver(resize);observer.observe(stage);
-  Promise.all(Object.values(assets).map(image=>image.decode().catch(()=>undefined))).then(()=>{
+  Promise.all(Object.values(assets).map(image=>image.decode().catch(()=>undefined))).then(async()=>{
+    if(renderer&&assets.earth.naturalWidth)await renderer.prepareBodies();
     if(!disposed&&!interacted&&enhanced&&(!location.hash||location.hash==='#horizon')&&Math.abs(root.getBoundingClientRect().top)<24)startIntro();
   });
   document.addEventListener('astro:before-swap',()=>{
     disposed=true;motion?.pause();cancelAnimationFrame(frame);observer.disconnect();
+    earthControl?.removeEventListener('pointerdown',earthDown);earthControl?.removeEventListener('pointermove',earthMove);earthControl?.removeEventListener('pointerup',earthUp);earthControl?.removeEventListener('pointercancel',earthUp);earthControl?.removeEventListener('click',earthClick);earthControl?.removeEventListener('keydown',earthKey);
     window.removeEventListener('hashchange',onHashChange);window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',resize);window.removeEventListener('wheel',takeControl);window.removeEventListener('touchstart',takeControl);window.removeEventListener('pointerdown',onPointer);window.removeEventListener('keydown',onKey);
     document.removeEventListener('click',onDocumentClick);document.removeEventListener('visibilitychange',onVisibility);reducedQuery.removeEventListener('change',onPreference);
   },{once:true});

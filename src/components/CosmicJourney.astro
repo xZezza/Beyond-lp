@@ -10,9 +10,10 @@ const chapters = [
 ---
 <section class="cosmic-journey" id="journey" aria-label="From a black hole to Earth" data-mode="still">
   <div class="journey-stage">
-    <video class="journey-motion-source" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="/assets/black-hole-motion-clean.mp4" type="video/mp4" /></video>
+    <video class="journey-motion-source" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="/assets/black-hole-motion-clean.mp4" type="video/mp4" /></video>
     <canvas class="cosmic-canvas" aria-hidden="true"></canvas>
     <div class="journey-vignette" aria-hidden="true"></div>
+    <button class="earth-interaction" type="button" aria-label="Pause Earth rotation" aria-describedby="earth-rotate-hint" aria-pressed="false" hidden></button>
     <div class="journey-chapters">
       {chapters.map((chapter,index)=><article class:list={['journey-chapter',{'is-current':index===0}]} id={chapter.id} data-chapter={index} data-credit={chapter.credit} aria-labelledby={`${chapter.id}-title`}>
         <img class="journey-still" src={chapter.image} alt={chapter.alt} width="1600" height="1000" loading={index===0?'eager':'lazy'} fetchpriority={index===0?'high':'auto'} />
@@ -20,6 +21,7 @@ const chapters = [
           <p class="landing-eyebrow">{chapter.eyebrow}</p>
           {index===0?<h1 id={`${chapter.id}-title`}>{chapter.lines.map((line,i)=><span class:list={{'journey-accent':i===2}}>{line}</span>)}</h1>:<h2 id={`${chapter.id}-title`}>{chapter.lines.map(line=><span>{line}</span>)}</h2>}
           {chapter.description&&<p class="journey-description">{chapter.description}</p>}
+          {index===4&&<p class="earth-rotate-hint" id="earth-rotate-hint" hidden>Drag to rotate · click to pause</p>}
           {index===4&&<div class="journey-actions"><a class="landing-button primary-button" href="#hypothesis">Explore the hypothesis</a><button class="journey-text-link" data-journey-replay hidden>Replay the descent</button></div>}
         </div>
       </article>)}

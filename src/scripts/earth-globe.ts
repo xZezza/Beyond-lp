@@ -3,6 +3,7 @@ const TAU=Math.PI*2;
  * silhouette and sun direction remain fixed. Uses credited NASA map pixels. */
 export class EarthGlobe {
   readonly canvas=document.createElement('canvas');
+  readonly backend='cpu';
   private ctx:CanvasRenderingContext2D;
   private frame:ImageData;
   private u:Float32Array;
@@ -12,8 +13,11 @@ export class EarthGlobe {
   private mapWidth=2048;
   private previous=-Infinity;
   private period:number;
+  private tilt:number;
+  private lastYaw=NaN;
+  private lastPitch=0;
   constructor(image:CanvasImageSource,resolution=640,period=90000,tilt=.18) {
-    const n=resolution;this.period=period;this.canvas.width=this.canvas.height=n;
+    const n=resolution;this.period=period;this.tilt=tilt;this.mapWidth=resolution<256?512:2048;this.canvas.width=this.canvas.height=n;
     this.ctx=this.canvas.getContext('2d')!;this.frame=this.ctx.createImageData(n,n);
     this.u=new Float32Array(n*n);this.v=new Uint32Array(n*n);this.light=new Float32Array(n*n);
     const texture=document.createElement('canvas');texture.width=this.mapWidth;texture.height=this.mapWidth/2;
@@ -30,9 +34,20 @@ export class EarthGlobe {
       this.frame.data[i*4+3]=Math.min(255,(1-r2)*n*100);
     }
   }
-  render(time:number) {
-    if(time-this.previous<33)return this.canvas;this.previous=time;
-    const shift=((time/this.period)%1+1)%1;
+  render(time:number,yaw=0,pitch=0) {
+    if(time-this.previous<33&&yaw===this.lastYaw&&pitch===this.lastPitch)return this.canvas;
+    this.previous=time;this.lastYaw=yaw;
+    if(pitch!==this.lastPitch){
+      this.lastPitch=pitch;const n=this.canvas.width,c=Math.cos(this.tilt),s=Math.sin(this.tilt),cp=Math.cos(pitch),sp=Math.sin(pitch);
+      for(let y=0;y<n;y++)for(let x=0;x<n;x++) {
+        const i=y*n+x;if(!this.frame.data[i*4+3])continue;
+        const nx=(x+.5-n/2)/(n/2-2),ny=-(y+.5-n/2)/(n/2-2),z=Math.sqrt(Math.max(0,1-nx*nx-ny*ny));
+        const rx=nx*c+ny*s,ry=-nx*s+ny*c,py=ry*cp+z*sp,pz=-ry*sp+z*cp;
+        this.u[i]=Math.atan2(rx,pz)/TAU+.5;
+        this.v[i]=Math.min(this.mapWidth/2-1,Math.max(0,Math.floor((.5-Math.asin(Math.max(-1,Math.min(1,py)))/Math.PI)*this.mapWidth/2)))*this.mapWidth;
+      }
+    }
+    const shift=((time/this.period+yaw)%1+1)%1;
     const out=this.frame.data,src=this.map,w=this.mapWidth;
     for(let i=0;i<this.u.length;i++) {
       if(!out[i*4+3])continue;

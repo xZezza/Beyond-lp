@@ -1,13 +1,14 @@
 import { clamp, mix, smooth, seededRandom } from '../data/journey-math.mjs';
-import { CosmicSprites } from './cosmic-sprites';
 import { COSMOS, cameraAt, earthAt } from '../data/nested-camera.mjs';
 import { EarthGlobe } from './earth-globe';
+import {makeEarthSurface,type SphereSurface} from './gpu-earth';
+import {dragEarth} from '../data/earth-interaction.mjs';
 import { GalaxyCloud } from './galaxy-cloud';
 import {PLANETS,orbitalPosition} from '../data/orbital-motion.mjs';
 import {makePlanet} from './planet-surfaces';
 import {entryFieldSize,entryDiscOpacity} from '../data/entry-composition.mjs';
 
-type Assets = { hole: HTMLImageElement; field: HTMLImageElement; galaxy: HTMLImageElement; earth: HTMLImageElement };
+type Assets = { hole: HTMLImageElement; field: HTMLImageElement; earth: HTMLImageElement };
 type Star = { x: number; y: number; depth: number; size: number; alpha: number };
 const TAU = Math.PI * 2;
 
@@ -18,8 +19,12 @@ export class CosmicRenderer {
   private ratio = 1;
   private stars: Star[];
   private ctx: CanvasRenderingContext2D;
-  private sprites = new CosmicSprites();
-  private globe?: EarthGlobe;
+  private globe?: SphereSurface;
+  private earthPose={yaw:0,pitch:0};
+  private spin=true;
+  private spinTime=0;
+  private lastDrawTime=0;
+  private earthBounds={x:0,y:0,radius:0};
   private galaxy = new GalaxyCloud();
   private planets=new Map<string,EarthGlobe>();
 
@@ -33,8 +38,27 @@ export class CosmicRenderer {
 
   hasLiveMotion(progress: number) {return progress>.58||(progress<.35&&!!this.motion&&!this.motion.paused&&this.motion.readyState>=2);}
 
-  prepare(image: HTMLImageElement,kind: 'hole'|'galaxy'|'field'|'earth') {
-    if(this.ready(image)) this.sprites.get(image,kind);
+  get earthSpinning(){return this.spin;}
+  get earthBackend(){return this.globe?.backend||'pending';}
+  get earthOrientation(){return {...this.earthPose};}
+  get earthHitArea(){return {...this.earthBounds};}
+  rotateEarth(dx:number,dy:number) {
+    if(this.spin){this.spinTime=this.lastDrawTime;this.spin=false;}
+    this.earthPose=dragEarth(this.earthPose,dx,dy,this.earthBounds.radius*2);
+  }
+  toggleEarthSpin() {
+    if(this.spin){this.spinTime=this.lastDrawTime;this.spin=false;}
+    else{this.earthPose.yaw+=(this.spinTime-this.lastDrawTime)/90000;this.spin=true;}
+  }
+  async prepareBodies() {
+    const idle=()=>new Promise<void>(resolve=>{
+      if('requestIdleCallback' in window)window.requestIdleCallback(()=>resolve(),{timeout:80});else setTimeout(resolve,0);
+    });
+    await idle();if(!this.globe)this.globe=makeEarthSurface(this.assets.earth);
+    this.globe.render(performance.now());
+    for(const planet of PLANETS){if(planet.name==='Earth')continue;await idle();
+      if(!this.planets.has(planet.name))this.planets.set(planet.name,makePlanet(planet.name,planet.spin));
+    }
   }
 
   resize(width: number, height: number) {
@@ -48,7 +72,7 @@ export class CosmicRenderer {
   }
 
   draw(progress: number,time=performance.now()) {
-    const p = clamp(progress);
+    const p = clamp(progress);this.lastDrawTime=time;
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
@@ -98,13 +122,14 @@ export class CosmicRenderer {
     const earthWorld=earthAt(time);
     const earth=point(earthWorld.x,earthWorld.y);
     const radius=COSMOS.earth.radius*camera.scale;
+    this.earthBounds={x:earth.x,y:earth.y,radius};
     if(radius>.3&&this.ready(this.assets.earth)) {
       ctx.globalAlpha=1;
       const atmosphere=ctx.createRadialGradient(earth.x,earth.y,radius*.95,earth.x,earth.y,radius*1.10);
       atmosphere.addColorStop(0,'#7bbfff55');atmosphere.addColorStop(.40,'#499bff18');atmosphere.addColorStop(1,'#52aaff00');
       ctx.fillStyle=atmosphere;ctx.fillRect(earth.x-radius*1.12,earth.y-radius*1.12,radius*2.24,radius*2.24);
-      if(!this.globe)this.globe=new EarthGlobe(this.assets.earth);
-      ctx.drawImage(this.globe.render(time),earth.x-radius,earth.y-radius,radius*2,radius*2);
+      if(!this.globe)this.globe=makeEarthSurface(this.assets.earth);
+      ctx.drawImage(this.globe.render(this.spin?time:this.spinTime,this.earthPose.yaw,this.earthPose.pitch),earth.x-radius,earth.y-radius,radius*2,radius*2);
     }
     // The movie remains intact. Its outer light overlaps the already filled
     // universe smoothly, replacing the old single-frame cutoff at .30.
@@ -113,7 +138,7 @@ export class CosmicRenderer {
     if(discOpacity>0&&this.ready(this.assets.hole)) {
       const height=holeSize*this.assets.hole.naturalHeight/this.assets.hole.naturalWidth;
       ctx.globalAlpha=discOpacity;ctx.globalCompositeOperation='screen';
-      ctx.drawImage(this.motion&&this.motion.readyState>=2?this.motion:this.sprites.get(this.assets.hole,'hole'),hole.x-holeSize/2,hole.y-height/2,holeSize,height);
+      ctx.drawImage(this.motion&&this.motion.readyState>=2?this.motion:this.assets.hole,hole.x-holeSize/2,hole.y-height/2,holeSize,height);
       ctx.globalCompositeOperation='source-over';
     }
     ctx.globalAlpha = 1;
@@ -154,8 +179,9 @@ export class CosmicRenderer {
     ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(0, 0, sunRadius, 0, TAU); ctx.fill();
     for (const planet of planets) {
       const {x:px,y:py}=orbitalPosition(planet,time,radius);
-      if(Math.abs(px)>this.width*3||Math.abs(py)>this.height*3)continue;
       const r = planet.size * (mobile ? .8 : 1) * zoom;
+      const margin=r*(planet.name==='Saturn'?2.3:1.1)+24;
+      if(x+px+margin<0||x+px-margin>this.width||y+py+margin<0||y+py-margin>this.height)continue;
       if (planet.name !== 'Earth') {
         if (planet.name === 'Saturn') {
           ctx.strokeStyle = '#e3d0a4a0'; ctx.lineWidth = r * .35;

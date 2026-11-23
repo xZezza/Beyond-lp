@@ -81,3 +81,11 @@ The entry-only compositing in `entry-composition.mjs` frames the existing univer
 The thin inner orange ring is artistically suppressed in the black-hole video/poster assets. The existing renderer and entry transition are unchanged. `scripts/clean-black-hole-ring.py` reproduces the local media edit from the original derived clip and poster, using ffmpeg only as an optional asset-preparation tool. No runtime dependency was added. The source credit records this adaptation.
 
 The universe field uses the full 4537×4630 image and is drawn directly with high-quality image sampling. It bypasses the former 1600px sprite cache, preserving detail at the accepted entry scale without an additional full-size pixel-processing canvas.
+
+### Interactive Earth and motion performance
+
+At Earth, drag the globe with a mouse or finger to turn it horizontally and vertically. Dragging pauses axial spin; click/tap resumes or pauses it. Focus the globe and use arrow keys for rotation, or Space/Enter for pause/resume. The camera and orbital position remain independent of the chosen surface orientation. Native scrolling remains available outside the globe, and still/reduced-motion views hide this control.
+
+`gpu-earth.ts` renders the NASA map on a sphere with native WebGL, falling back to `earth-globe.ts` if unavailable. Planet maps are prepared in idle slices, and distant galaxy detail is cached while near stars retain depth projection and use batched paths. The full-resolution universe photograph remains unchanged. Development-only `data-render-stats` reports local draw cost for inspection, not a device-independent FPS guarantee.
+
+After the one-shot intro returns to the horizon, both camera travel and the black-hole movie stop. The movie holds its current frame without seeking or continuing the internal boomerang. Explicit Replay restarts it; visibility changes do not.
