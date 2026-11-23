@@ -37,12 +37,13 @@
       "bytes": 1915552
     },
     {
-      "file": "webb-deep-field.webp",
+      "file": "webb-deep-field-full.jpg",
       "source_page": "https://science.nasa.gov/asset/webb/webbs-first-deep-field-nircam-image/",
-      "download_url": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/webb/science/2022/07/STScI-01G8H1K2BCNATEZSKVRN9Z69SR.png?w=1600&h=1600&fit=clip",
+      "download_url": "https://assets.science.nasa.gov/content/dam/science/missions/webb/science/2022/07/STScI-01G8H1K2BCNATEZSKVRN9Z69SR.png",
       "credit": "NASA, ESA, CSA, STScI",
       "type": "near-infrared observational composite in assigned colors",
-      "notes": "Converted from NASA’s 1600px image to WebP for web delivery. Used as an observational field in an explicitly imagined cinematic montage; not an image of a universe inside a black hole."
+      "notes": "High-quality 4:4:4 JPEG derived from the full 4537×4630 NASA display PNG, preserving native dimensions. Replaces the 1600px WebP. Drawn directly from the decoded original, bypassing the old 1600px sprite reduction. No generated or upscaled detail; the same composition, credits and entry geometry are retained.",
+      "bytes": 3603673
     },
     {
       "file": "milky-way-illustration.webp",

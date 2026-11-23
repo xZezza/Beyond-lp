@@ -39,3 +39,5 @@
 - Current bounded request (23 November): only repair the entry into the universe. Fill the black-hole centre with the existing universe texture at sufficient scale, with no small-circle clipping or cuts. Keep the accepted movie completely intact and soften its former hard exit. Do not change the camera route, later scenes, content, planetary animation or one-shot playback.
 
 - Latest request: remove only the thin inner orange ring shown in the screenshot. Use selectively edited derived video/poster assets; preserve the accepted renderer, completed entry transition, route and timing. Do not reintroduce runtime circular or horizontal crop masks. Keep the NASA source credit and disclose the artistic media adaptation.
+
+- Latest image-quality correction: use the full native 4537×4630 Webb field, not the 1600px copy. Draw it directly without sending it through the 1600px sprite cache. Preserve the accepted entry coverage, camera, movie and one-shot playback. Do not invent sharpness or upscale low-resolution pixels.

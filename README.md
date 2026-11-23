@@ -79,3 +79,5 @@ The black-hole loop now uses the earlier, visibly changing NASA camera angle (se
 The entry-only compositing in `entry-composition.mjs` frames the existing universe texture to cover the horizon before it becomes visible. It removes the small circular clip and eases the intact black-hole movie out continuously. Later scene framing and playback are unchanged.
 
 The thin inner orange ring is artistically suppressed in the black-hole video/poster assets. The existing renderer and entry transition are unchanged. `scripts/clean-black-hole-ring.py` reproduces the local media edit from the original derived clip and poster, using ffmpeg only as an optional asset-preparation tool. No runtime dependency was added. The source credit records this adaptation.
+
+The universe field uses the full 4537×4630 image and is drawn directly with high-quality image sampling. It bypasses the former 1600px sprite cache, preserving detail at the accepted entry scale without an additional full-size pixel-processing canvas.

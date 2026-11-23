@@ -76,7 +76,11 @@ export class CosmicRenderer {
       const imageSize=entryFieldSize(fieldSize,w,h,field.x,field.y,anchorX,anchorY);
       const detail=1-smooth(h*3,h*6,fieldSize);
       ctx.globalAlpha=detail*reveal;
-      ctx.drawImage(this.sprites.get(this.assets.field,'field'),field.x-imageSize/2,field.y-imageSize/2,imageSize,imageSize);
+      // Draw the native-resolution photograph directly: the old sprite path
+      // reduced it to 1600px before enlarging it across the entry.
+      ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+      ctx.globalCompositeOperation='screen';
+      ctx.drawImage(this.assets.field,field.x-imageSize/2,field.y-imageSize/2,imageSize,imageSize);
       ctx.restore();
     }
 
