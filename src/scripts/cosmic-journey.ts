@@ -68,10 +68,12 @@ export function initCosmicJourney(root: HTMLElement) {
   function syncHoleMotion() {
     if(!motion)return;
     const rect=root.getBoundingClientRect();
-    const wanted=holeShouldPlay({enhanced,visible:!document.hidden&&rect.bottom>0&&rect.top<innerHeight,progress:current,returned:holeReturned});
+    const wanted=holeShouldPlay({enhanced,visible:!document.hidden&&rect.bottom>0&&rect.top<innerHeight,progress:current,returned:holeReturned,intro,moving:current!==target});
     root.dataset.holeMotion=holeReturned?'parked':wanted?'playing':'paused';
-    if(wanted===motionWanted)return;motionWanted=wanted;
-    if(wanted){motion.muted=true;void motion.play().catch(()=>{motionWanted=false;});}else motion.pause();
+    // Enforce paused even if a previous play promise or media event was delayed.
+    if(!wanted){motionWanted=false;motion.pause();return;}
+    if(motionWanted)return;motionWanted=true;
+    motion.muted=true;void motion.play().then(()=>{if(!motionWanted)motion.pause();}).catch(()=>{motionWanted=false;});
   }
   function updateEarthControl() {
     if(!earthControl||!renderer)return;
@@ -225,10 +227,14 @@ export function initCosmicJourney(root: HTMLElement) {
   setMode();playbackUI();
   const initial=chapters.findIndex(chapter=>'#'+chapter.id===location.hash);if(initial>=0)jump(initial,true,false);
   const observer=new ResizeObserver(resize);observer.observe(stage);
-  Promise.all(Object.values(assets).map(image=>image.decode().catch(()=>undefined))).then(async()=>{
-    if(renderer&&assets.earth.naturalWidth)await renderer.prepareBodies();
+  // Start as soon as the opening imagery is ready. Preparing later planets
+  // must not delay the automatic journey or make the opening look manual.
+  Promise.all([assets.hole,assets.field].map(image=>image.decode().catch(()=>undefined))).then(()=>{
     if(!disposed&&!interacted&&enhanced&&(!location.hash||location.hash==='#horizon')&&Math.abs(root.getBoundingClientRect().top)<24)startIntro();
   });
+  void assets.earth.decode().then(async()=>{
+    if(!disposed&&renderer)await renderer.prepareBodies();
+  }).catch(()=>undefined);
   document.addEventListener('astro:before-swap',()=>{
     disposed=true;motion?.pause();cancelAnimationFrame(frame);observer.disconnect();
     earthControl?.removeEventListener('pointerdown',earthDown);earthControl?.removeEventListener('pointermove',earthMove);earthControl?.removeEventListener('pointerup',earthUp);earthControl?.removeEventListener('pointercancel',earthUp);earthControl?.removeEventListener('click',earthClick);earthControl?.removeEventListener('keydown',earthKey);

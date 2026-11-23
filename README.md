@@ -89,3 +89,5 @@ At Earth, drag the globe with a mouse or finger to turn it horizontally and vert
 `gpu-earth.ts` renders the NASA map on a sphere with native WebGL, falling back to `earth-globe.ts` if unavailable. Planet maps are prepared in idle slices, and distant galaxy detail is cached while near stars retain depth projection and use batched paths. The full-resolution universe photograph remains unchanged. Development-only `data-render-stats` reports local draw cost for inspection, not a device-independent FPS guarantee.
 
 After the one-shot intro returns to the horizon, both camera travel and the black-hole movie stop. The movie holds its current frame without seeking or continuing the internal boomerang. Explicit Replay restarts it; visibility changes do not.
+
+Opening regression fix: the preview waits only for its opening images, while later planetary preparation runs independently. Open `/` or `/#horizon` to see autoplay; later chapter links deliberately open manual exploration. The black-hole movie now also pauses at manual rest before a completed return (for example, after interrupting the intro), rather than playing whenever the camera is near the horizon.

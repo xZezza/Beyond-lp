@@ -4,6 +4,6 @@ export function dragEarth(pose,dx,dy,diameter) {
  const scale=Math.max(24,diameter);
  return {yaw:pose.yaw-dx/scale*.5,pitch:clamp(pose.pitch+dy/scale*1.6,-1.35,1.35)};
 }
-export function holeShouldPlay({enhanced,visible,progress,returned}) {
- return enhanced&&visible&&!returned&&progress<.35;
+export function holeShouldPlay({enhanced,visible,progress,returned,intro=false,moving=false}) {
+ return enhanced&&visible&&!returned&&(intro||moving)&&progress<.35;
 }

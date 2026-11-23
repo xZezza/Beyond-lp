@@ -16,11 +16,19 @@ test('vertical dragging stops at the poles and a tiny target remains finite',()=
 });
 test('the black-hole movie remains parked after the completed return, including visibility changes',()=>{
  for(const visible of [true,false,true])assert.equal(holeShouldPlay({enhanced:true,visible,progress:0,returned:true}),false);
- assert.equal(holeShouldPlay({enhanced:true,visible:true,progress:0,returned:false}),true);
+ assert.equal(holeShouldPlay({enhanced:true,visible:true,progress:0,returned:false,intro:true}),true);
 });
 test('offscreen, still scenes and later chapters pause the black-hole movie',()=>{
- const opening={enhanced:true,visible:true,progress:0,returned:false};
+ const opening={enhanced:true,visible:true,progress:0,returned:false,intro:true};
  assert.equal(holeShouldPlay({...opening,visible:false}),false);
  assert.equal(holeShouldPlay({...opening,enhanced:false}),false);
  assert.equal(holeShouldPlay({...opening,progress:.5}),false);
+});
+
+test('manual idle never plays the movie, including interrupted intro and direct chapter entry',()=>{
+ const manual={enhanced:true,visible:true,progress:0,returned:false,intro:false};
+ assert.equal(holeShouldPlay(manual),false);
+ assert.equal(holeShouldPlay({...manual,moving:true}),true);
+ assert.equal(holeShouldPlay({...manual,moving:false}),false);
+ assert.equal(holeShouldPlay({...manual,returned:true,moving:true}),false);
 });

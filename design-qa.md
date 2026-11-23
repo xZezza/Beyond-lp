@@ -101,3 +101,11 @@ Browser QA covered 1280×800 desktop and 390×844 mobile layouts, drag in both a
 Development timing samples on the narrow preview reduced steady Earth draw/update cost from a baseline mean 8.9 ms (peak 11.6 ms) to a final mean 1.3 ms (peak 2.4 ms). The browser reported about 30 fps both before and after; screenshots and interaction sometimes caused larger timing spikes. These are local samples, not a guarantee for every device or a claim of 60 fps. Screenshots in the companion workspace: `output/landing/interaction/earth-drag-desktop.jpg`, `earth-drag-mobile.jpg`, `black-hole-parked.jpg`.
 
 Validation: all 25 tests pass; Astro check reports no errors, warnings or hints; production build and resource verification pass, retaining the known dependency annotation warnings. No new dependency, purchase or deployment.
+
+## Playback regression: idle before completion and opening readiness — 23 November 2026
+
+The previous movie policy only blocked playback after a completed return. A direct manual chapter visit or interrupted intro could therefore leave the black-hole movie looping at a stationary camera. Playback now additionally requires an active intro or unsettled manual camera movement. Pausing is enforced even when an earlier media play promise completes late. The existing completed-return lock remains in force.
+
+The opening now starts after only the black-hole and universe images decode, independently of Earth/planet preparation. `/` and `/#horizon` start the single automatic trip; a direct `/#earth` intentionally skips it, which explained the previously shared preview opening at Earth. No later-scene geometry or imagery was changed.
+
+Browser regression checks: a root navigation automatically entered `intro` with increasing progress and a playing movie, without user input. Interrupting near the opening with ArrowDown switched to manual; after camera settling, video time remained 0.7713 across two separated reads with `paused=true`. Manual chapter return to the horizon also settled paused. A subsequent fresh root visit completed the full single trip without input, ending at progress 0, `manual`, `parked`, and paused movie time 3.0623. The 26 tests, Astro check and production resource/build checks pass. Known dependency annotation warnings remain non-blocking. Updated the standalone preview aliases.
