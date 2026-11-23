@@ -55,19 +55,19 @@
       "notes": "1800px WebP of the published artwork. Camera framing and scale change in the imagined journey; not a photograph from outside the Milky Way."
     },
     {
-      "file": "black-hole-motion-clean.mp4",
+      "file": "black-hole-motion-refined.mp4",
       "source_page": "https://svs.gsfc.nasa.gov/13326/",
       "download_url": "https://svs.gsfc.nasa.gov/vis/a010000/a013300/a013326/Black_Hole_Accretion_Disk_Sim_4k.mp4",
       "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
       "type": "artistically edited NASA scientific visualization",
-      "notes": "Derived from the 3840×3840 NASA movie, seconds 9.5–12, followed by the reverse camera excursion for a continuous loop. Cropped to 3840×2800 and encoded at 3200×2334, 30 fps, without audio. This earlier camera movement is visibly animated, remaining on the same side of the disc. The reversed segment is an illustrative playback edit, not a physical reversal of accretion. The thin inner orange ring is selectively suppressed in the derived media for the requested art direction. Local morphological feature detection preserves the broad original disc pixels, with a feathered spatial limit. This edited cinematic visualization does not retain every simulated optical feature. The runtime renderer and entry compositing are unchanged."
+      "notes": "Derived from the 3840×3840 NASA movie, seconds 9.5–12, followed by the reverse camera excursion for a continuous loop. Cropped to 3840×2800 and encoded at 3200×2334, 30 fps, without audio. This earlier camera movement is visibly animated, remaining on the same side of the disc. The reversed segment is an illustrative playback edit, not a physical reversal of accretion. The thin inner orange ring is selectively suppressed in the derived media for the requested art direction. Local morphological feature detection preserves the broad original disc pixels, with a feathered spatial limit. This edited cinematic visualization does not retain every simulated optical feature. The runtime renderer and entry compositing are unchanged. The remaining narrow ring/disc join is smoothed offline by scripts/refine-ring-join.py using its adjacent unchanged contour. This is an artistic retouch, not an additional simulated object."
     },
     {
-      "file": "black-hole-detail-clean.jpg",
+      "file": "black-hole-detail-refined.jpg",
       "source_page": "https://svs.gsfc.nasa.gov/13326/",
       "credit": "NASA’s Goddard Space Flight Center / Jeremy Schnittman",
       "type": "artistically edited frame from NASA visualization",
-      "notes": "3200×2334 JPEG extracted from second 9.5 of the same 4K movie and matching crop; used as the high-resolution still fallback. Matching selective suppression of the thin inner orange ring; prepared by scripts/clean-black-hole-ring.py."
+      "notes": "3200×2334 JPEG extracted from second 9.5 of the same 4K movie and matching crop; used as the high-resolution still fallback. Matching selective suppression of the thin inner orange ring; prepared by scripts/clean-black-hole-ring.py. The remaining narrow ring/disc join is smoothed offline by scripts/refine-ring-join.py using its adjacent unchanged contour. This is an artistic retouch, not an additional simulated object."
     },
     {
       "file": "earth-surface-nasa.jpg",

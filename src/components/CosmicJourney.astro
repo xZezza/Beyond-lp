@@ -1,7 +1,7 @@
 ---
 import '../styles/cosmic-journey.css';
 const chapters = [
-  {id:'horizon', label:'Black hole', eyebrow:'A speculative beginning', title:'What if our universe began inside a black hole?', lines:['What if our universe','began inside','a black hole?'], description:'', image:'/assets/black-hole-detail-clean.jpg', alt:'High-resolution frame from NASA’s animated black-hole simulation', credit:'Black hole visualization · NASA / Jeremy Schnittman'},
+  {id:'horizon', label:'Black hole', eyebrow:'A speculative beginning', title:'What if our universe began inside a black hole?', lines:['What if our universe','began inside','a black hole?'], description:'', image:'/assets/black-hole-detail-refined.jpg', alt:'High-resolution frame from NASA’s animated black-hole simulation', credit:'Black hole visualization · NASA / Jeremy Schnittman'},
   {id:'galaxies', label:'Galaxies', eyebrow:'An imagined universe within', title:'An entire universe. On the other side.', lines:['An entire universe.','On the other side.'], description:'Galaxies come into view. Countless worlds, held inside one extraordinary possibility.', image:'/assets/webb-deep-field-full.jpg', alt:'Webb’s deep-field image of the galaxy cluster SMACS 0723', credit:'Webb deep field · NASA, ESA, CSA, STScI'},
   {id:'milky-way', label:'Milky Way', eyebrow:'Finding our place', title:'One galaxy. Countless worlds.', lines:['One galaxy.','Countless worlds.'], description:'We draw closer to the Milky Way. Somewhere in its spiral arms, a familiar star is waiting.', image:'/assets/milky-way-illustration.webp', alt:'Artist’s impression of the Milky Way’s spiral arms by NASA, JPL-Caltech, ESO and R. Hurt', credit:'Illustrated galaxy · volumetric star cloud'},
   {id:'solar-system', label:'Solar System', eyebrow:'A familiar corner of the cosmos', title:'One star. Our Solar System.', lines:['One star.','Our Solar System.'], description:'Past the outer planets and inward toward the Sun. A small blue world begins to stand out.', image:'/assets/saturn-cassini-nasa.webp', alt:'Cassini’s enhanced-color photograph of Saturn and its rings', credit:'Illustrated Solar System · sizes and distances compressed'},
@@ -10,7 +10,7 @@ const chapters = [
 ---
 <section class="cosmic-journey" id="journey" aria-label="From a black hole to Earth" data-mode="still">
   <div class="journey-stage">
-    <video class="journey-motion-source" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="/assets/black-hole-motion-clean.mp4" type="video/mp4" /></video>
+    <video class="journey-motion-source" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="/assets/black-hole-motion-refined.mp4" type="video/mp4" /></video>
     <canvas class="cosmic-canvas" aria-hidden="true"></canvas>
     <div class="journey-vignette" aria-hidden="true"></div>
     <button class="earth-interaction" type="button" aria-label="Pause Earth rotation" aria-describedby="earth-rotate-hint" aria-pressed="false" hidden></button>

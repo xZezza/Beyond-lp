@@ -22,13 +22,16 @@ export function initCosmicJourney(root: HTMLElement) {
   let manuallyStill=false,enhanced=false,disposed=false,interacted=false;
   let active=-1,caption=-1,current=0,target=0,frame=0,lastTime=0;
   let chapterGlide=false,intro=false,introElapsed=0,previewFinished=false;
-  let introScrollTarget:number|null=null;
+  const openingRequested=!location.hash||location.hash==='#horizon';
+  const previousRestoration=history.scrollRestoration;
+  if(openingRequested)history.scrollRestoration='manual';
+  function restoreHistory(){history.scrollRestoration=previousRestoration;}
   let holeReturned=false,motionWanted=false,lastHud=0,lastScrub=-1,lastAria='',lastEarthBox='',lastEarthState='',lastEarthPose='';
   let statsSince=0,statsFrames=0,statsDraw=0,statsPeak=0;
   let renderer: CosmicRenderer|undefined;
   const motion=root.querySelector<HTMLVideoElement>('.journey-motion-source');
   const assets={
-    hole:load('/assets/black-hole-detail-clean.jpg'),
+    hole:load('/assets/black-hole-detail-refined.jpg'),
     field:load('/assets/webb-deep-field-full.jpg'),
     earth:load('/assets/earth-surface-nasa.jpg'),
   };
@@ -103,26 +106,28 @@ export function initCosmicJourney(root: HTMLElement) {
   }
   function endIntro(reset=false) {
     if(!intro)return;
-    intro=false;previewFinished=true;lastTime=0;introScrollTarget=null;
+    intro=false;previewFinished=true;lastTime=0;restoreHistory();root.dataset.introState=reset?'completed':'interrupted';
     if(reset){holeReturned=true;current=target=0;window.scrollTo({top:position(),behavior:'instant'});}
     playbackUI();syncHoleMotion();requestDraw();
   }
   function startIntro() {
     if(!enhanced||reducedQuery.matches)return;
-    intro=true;holeReturned=false;introElapsed=0;current=target=0;lastTime=0;chapterGlide=false;
+    history.scrollRestoration='manual';
+    intro=true;root.dataset.introState='playing';holeReturned=false;introElapsed=0;current=target=0;lastTime=0;chapterGlide=false;
     if(motion&&motion.readyState>=1)motion.currentTime=0;
-    introScrollTarget=position();
     history.replaceState(null,'','#horizon');
-    window.scrollTo({top:introScrollTarget,behavior:'instant'});
+    window.scrollTo({top:position(),behavior:'instant'});
     playbackUI();syncHoleMotion();requestDraw();
   }
   function tick(now:number) {
     frame=0;
     if(!enhanced||disposed||document.hidden){lastTime=0;return;}
-    const dt=lastTime?Math.min(now-lastTime,64):16;lastTime=now;
+    const elapsed=lastTime?Math.max(0,now-lastTime):16;
+    const dt=Math.min(elapsed,64);lastTime=now;
     if(intro) {
-      introElapsed+=dt;
+      introElapsed+=elapsed;
       const step=introAt(introElapsed);current=target=step.progress;
+      if(root.dataset.introPhase!==step.phase)root.dataset.introPhase=step.phase;
       // Complete exactly one return trip, then leave the camera at the horizon.
       if(step.done)endIntro(true);
     } else {
@@ -147,8 +152,9 @@ export function initCosmicJourney(root: HTMLElement) {
     if(intro){const progress=current;endIntro();window.scrollTo({top:position()+travel()*progress,behavior:'instant'});current=target=progress;}
   }
   function onScroll(){
-    if(intro&&Math.abs(window.scrollY-(introScrollTarget??position()))<24){requestDraw();return;}
-    if(intro){interacted=true;endIntro();}requestDraw();
+    // Scroll restoration, anchor alignment and layout shifts are not user input.
+    // Wheel/touch/keys and the explicit controls take over before native scroll.
+    requestDraw();
   }
   function jump(index:number,instant=false,markInteraction=true) {
     if(markInteraction)interacted=true;endIntro();
@@ -164,10 +170,14 @@ export function initCosmicJourney(root: HTMLElement) {
     if(Number.isInteger(index)&&index>=0&&index<chapters.length&&enhanced){event.preventDefault();history.replaceState(null,'','#'+chapters[index].id);jump(index);}
   }
   root.querySelectorAll<HTMLElement>('[data-journey-jump]').forEach(link=>link.addEventListener('click',onJump));
-  function onHashChange(){const index=chapters.findIndex(chapter=>'#'+chapter.id===location.hash);if(index>=0)jump(index);else if(intro){interacted=true;endIntro();}}
-  function onDocumentClick(event:MouseEvent){const link=(event.target as Element)?.closest('a');if(intro&&link&&!link.hasAttribute('data-journey-jump')){interacted=true;endIntro();}}
+  function onHashChange(){const index=chapters.findIndex(chapter=>'#'+chapter.id===location.hash);if(index>=0)jump(index);else if(!location.hash&&enhanced)startIntro();else if(intro){interacted=true;endIntro();}}
+  function onDocumentClick(event:MouseEvent){const link=(event.target as Element)?.closest('a');if(link&&!link.hasAttribute('data-journey-jump')){interacted=true;if(intro)endIntro();}}
   function onKey(event:KeyboardEvent){if(['ArrowDown','ArrowUp','PageDown','PageUp',' ','Home','End'].includes(event.key)&&!(event.target instanceof HTMLInputElement))takeControl();if(event.key==='Escape'&&intro){interacted=true;endIntro(true);}}
-  function onPointer(){interacted=true;chapterGlide=false;}
+  function onPointer(event:PointerEvent){
+    // Only a scrollbar gesture takes control here. A click to focus the page
+    // while opening assets load must not cancel the forthcoming preview.
+    if(event.clientX>=document.documentElement.clientWidth){takeControl();}
+  }
   introSkip?.addEventListener('click',takeControl);
   scrubber?.addEventListener('input',()=>{
     interacted=true;endIntro();chapterGlide=false;
@@ -220,7 +230,7 @@ export function initCosmicJourney(root: HTMLElement) {
   toggle.addEventListener('click',()=>{interacted=true;manuallyStill=!manuallyStill;setMode(true);});
   reducedQuery.addEventListener('change',onPreference);
   window.addEventListener('hashchange',onHashChange);window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',resize,{passive:true});
-  window.addEventListener('wheel',takeControl,{passive:true});window.addEventListener('touchstart',takeControl,{passive:true});window.addEventListener('pointerdown',onPointer,{passive:true});window.addEventListener('keydown',onKey);
+  window.addEventListener('wheel',takeControl,{passive:true});window.addEventListener('touchmove',takeControl,{passive:true});window.addEventListener('pointerdown',onPointer,{passive:true});window.addEventListener('keydown',onKey);
   document.addEventListener('click',onDocumentClick);document.addEventListener('visibilitychange',onVisibility);
   motion?.addEventListener('loadeddata',()=>{syncHoleMotion();requestDraw();});motion?.addEventListener('playing',requestDraw);
   try{renderer=new CosmicRenderer(canvas,assets,motion||undefined);}catch{renderer=undefined;}
@@ -229,16 +239,18 @@ export function initCosmicJourney(root: HTMLElement) {
   const observer=new ResizeObserver(resize);observer.observe(stage);
   // Start as soon as the opening imagery is ready. Preparing later planets
   // must not delay the automatic journey or make the opening look manual.
+  root.dataset.introState=openingRequested?'loading':'direct-chapter';
   Promise.all([assets.hole,assets.field].map(image=>image.decode().catch(()=>undefined))).then(()=>{
-    if(!disposed&&!interacted&&enhanced&&(!location.hash||location.hash==='#horizon')&&Math.abs(root.getBoundingClientRect().top)<24)startIntro();
+    if(!disposed&&!interacted&&enhanced&&openingRequested)startIntro();
+    else {restoreHistory();root.dataset.introState=interacted?'user-controlled':enhanced?'direct-chapter':'still';}
   });
   void assets.earth.decode().then(async()=>{
     if(!disposed&&renderer)await renderer.prepareBodies();
   }).catch(()=>undefined);
   document.addEventListener('astro:before-swap',()=>{
-    disposed=true;motion?.pause();cancelAnimationFrame(frame);observer.disconnect();
+    disposed=true;restoreHistory();motion?.pause();cancelAnimationFrame(frame);observer.disconnect();
     earthControl?.removeEventListener('pointerdown',earthDown);earthControl?.removeEventListener('pointermove',earthMove);earthControl?.removeEventListener('pointerup',earthUp);earthControl?.removeEventListener('pointercancel',earthUp);earthControl?.removeEventListener('click',earthClick);earthControl?.removeEventListener('keydown',earthKey);
-    window.removeEventListener('hashchange',onHashChange);window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',resize);window.removeEventListener('wheel',takeControl);window.removeEventListener('touchstart',takeControl);window.removeEventListener('pointerdown',onPointer);window.removeEventListener('keydown',onKey);
+    window.removeEventListener('hashchange',onHashChange);window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',resize);window.removeEventListener('wheel',takeControl);window.removeEventListener('touchmove',takeControl);window.removeEventListener('pointerdown',onPointer);window.removeEventListener('keydown',onKey);
     document.removeEventListener('click',onDocumentClick);document.removeEventListener('visibilitychange',onVisibility);reducedQuery.removeEventListener('change',onPreference);
   },{once:true});
 }
